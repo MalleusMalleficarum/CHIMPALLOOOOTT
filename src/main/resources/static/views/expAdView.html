@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<body>
+      <!--Sidebar content-->
+	<ul class="horContentBar">
+      <li><label class="horConBarIt" style="margin-top:6px;">{{labels.sortBy[lang]}}</label></li>
+      <li><select class="horConBarIt" ng-model="orderProp">
+        <option value="id">{{labels.sortOpt[lang][0]}}</option>
+        <option value="stats.timestampBegin">{{labels.sortOpt[lang][1]}}</option>
+      </select>
+      </li>
+      <li class="searchTop" style="margin-top:6px;"><input class="searchField"
+        ng-model="query" placeholder="{{labels.search[lang]}}"></li>
+  </ul>
+
+    <div class="experiments">
+      <!--Body content-->
+
+      <div class="verList">
+        <div ng-repeat="experiment in experiments | filter:query |
+          orderBy:orderProp">
+          <div class="verListBar">
+            <span class="verListBarName">{{experiment.id + ' '}}</span>
+            <span class="verListBarViews">{{labels.views[lang] + ' ' +
+              experiment.stats.previewClicksCount + '  '}}</span>
+            <span class="verListBarSubmissions">{{labels.submissions[lang] + ' ' +
+              experiment.stats.acceptedHitCount + '  '}}</span>
+            <span class="verListBarRatings">{{labels.ratings[lang] + ' ' +
+              experiment.stats.ratingCount + '  '}}</span>
+            <span class="verListBarStart">{{labels.startAt[lang] + ' ' +
+              experiment.stats.timestampBegin + '  '}}</span>
+            <span class="verListBarLastS">{{labels.lastSubmission[lang] + ' ' +
+              (experiment.stats.timeSinceLastSubmission | date:'dd:hh:mm' + ' ')
+            + labels.lastSubSuffix[lang]}}</span>
+            <span>{{labels.isActive[lang][1] + ' ' + experiment.finished}}</span>
+          </div>
+          <div style="margin-left: 10px;">
+            <button class="blackButton" style="width:200px;"
+              ng-click="exportAsTxt(experiment.id)">{{labels.exportAsTxt[lang]}}</button>
+            <button class="blackButton" style="width:200px;"
+              ng-click="exportAsCsv(experiment.id)">{{labels.exportAsCsv[lang]}}</button>
+            <a class="blackLinkButton" style="width:200px;"
+              href="#/expconf/{{experiment.id}}/{{experiment.config}}">
+                {{labels.confExp[lang]}}</a>
+            <button class="blackButton" style="width:200px;"
+              ng-click="stopSubmission(experiment.id)">{{labels.stopSub[lang]}}</button>
+            <button class="blackButton" style="width:200px;"
+              ng-click="endExperiment(experiment.id)"
+              ng-hide="experiment.finished">{{labels.endExp[lang]}}</button>
+            <button class="blackButton" style="width:200px;"
+              ng-click="deleteExperiment(experiment.id)"
+              ng-hide="!experiment.finished">{{labels.delExp[lang]}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <pre>{{experiments | json}}</pre>
+</body>
+</html>

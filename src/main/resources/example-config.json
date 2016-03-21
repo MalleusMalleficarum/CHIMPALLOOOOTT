@@ -1,0 +1,65 @@
+{
+  "id": "validconfig",
+  "taskQuestion": "What does Chimpalot stand for?",
+  "ratingTaskQuestion": "The question was: What does Chimpalot stand for?",
+  "taskDescription": "The description",
+  "taskTitle": "Chimpalot",
+  "taskTags": ["tag","chimpalot"],
+  "pictureURL": "http://imgs.xkcd.com/comics/it_begins.png",
+  "taskSourceURL": "http://xkcd.com/1656/",
+  "calibQuestions": [],
+  "controlQuestions": [
+    {
+      "id": "ancontrolquestion",
+      "question": "What is the answer to life, the universe and everything?",
+      "possibleAnswers": [
+        {
+          "id": "thetrueanswer",
+          "text": "42",
+          "isTrue": true
+        },
+        {
+          "id": "whatisthat",
+          "text": "41",
+          "isTrue": false
+        }
+      ]
+    }
+  ],
+  "maxCreativeTask": 1,
+  "maxRatingTask": 1,
+  "budget": 500,
+  "sendCreativeToMTurk": true,
+  "sendCreativeToPyBossa": true,
+  "sendRatingToMTurk": true,
+  "sendRatingToPyBossa": true,
+  "basicPaymentMTurk": 1,
+  "basicPaymentPyBossa": 1,
+  "paymentPerTaskCrMTurk": 1,
+  "paymentPerTaskRaMTurk": 2,
+  "paymentPerTaskCrPyBossa": 3,
+  "paymentPerTaskRaPyBossa": 4,
+  "evaluationType": "edu.kit.ipd.creativecrowd.view.GenericRatingView",
+  "strategy": {
+    "apoc_class": "edu.kit.ipd.creativecrowd.operations.strategies.BonusAPOC",
+    "apoc_bonusPool": "5"
+  },
+  "qualificationsPyBossa": [],
+  "qualificationsMTurk": [],
+  "ratingOptions": [
+    {
+      "id": "option1",
+      "text": "awesome!",
+      "value": 5.0
+    },
+    {
+      "id": "option2",
+      "text": "aweful.",
+      "value": 0.5 
+    }
+  ],
+  "experimentType": "Text",
+  "blockedWorkers": ["badworkersid"],
+  "totalTaskCountThreshold": 0,
+  "averageRatingThreshold": 0
+}

@@ -1,0 +1,457 @@
+/*------------------------------------*/
+/*-------- app css stylesheet --------*/
+/*------ author: Pascal Gabriel ------*/
+/*------------------------------------*/
+
+
+/*--------------------------------*/
+/* Classes for the navigation bar */
+/*--------------------------------*/
+
+.topList {
+    list-style-type: none;
+    margin: -10px -10px 0 -48px;
+    overflow: hidden;
+    background-color: #333;
+}
+
+.topList li a {
+	float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.topList li select {
+	margin-top: 11px;
+	margin-right: 10px;
+	float:right;
+}
+
+/* Change the link color to #111 (black) on hover */
+.topList a:hover:not(.active) {
+    background-color: #111;
+}
+
+.active {
+	background-color: #00b33c;
+}
+
+.searchTop {
+    display: block;
+    margin-top: 11px;
+    text-decoration: none;
+    float: left;
+}
+.searchField {
+	width: 100%;
+	padding-left: 24px;
+	margin-left: 14px;
+    box-sizing: border-box;
+    border: 2px solid rgb(235,235,235);
+    border-radius: 4px;
+    background-color: white;
+    background-image: url('../icons/searchicon.png');
+    background-position: 0 0; 
+    background-repeat: no-repeat;
+}
+
+/*-----------------*/
+/* verList classes */
+/*-----------------*/
+
+.verList {
+	list-style-type: none;
+}
+
+.verListButtons {
+	list-style-type: none;
+	margin-left: -20px;
+}
+.verListBar {
+	border-top-style: outset;
+	margin-left:10px;
+	margin-right:10px;
+}
+
+.verListBar span {
+	margin: 4px 2px;
+	display: inline-block;
+}
+.verListBarName {
+	width: 100px;
+	font-weight: bold;
+}
+.verListBarViews {
+	margin-right:20px;
+}
+.verListBarSubmissions {
+	margin-right:20px;
+}
+.verListBarRatings {
+	margin-right:20px;
+}
+.verListBarStart {
+	margin-right:20px;
+}
+.verListBarLastS {
+	margin-right:20px;
+}
+.horContentBar {
+	margin-bottom: 6pt;
+	margin-top: 10pt;
+	margin-left: -25px;
+	list-style-type: none;
+	overflow: hidden;
+}
+.horConBarIt {
+	float:left;
+	margin-right: 4px;
+}
+
+/*-------------------------------*/
+/* Classes for formatting a form */
+/*-------------------------------*/
+
+.formLine {
+	list-style-type: none;
+	overflow:hidden;
+	margin: 5px 0;
+}
+.formLine label {
+	float: left;
+	margin-left: 10px;
+	margin-top: 3px;
+	width: 460px;
+	display:block;
+}
+.formLine span {
+	float: left;
+	width: 430px;
+}
+.formLine button {
+	background-color: #333;
+    border: none;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    width: 205px;
+    height: 23px;
+}
+.formLine button:hover {
+	background-color: #111;
+}
+
+.formLine input[type=checkbox] {
+	float:left;
+	margin-left:0;
+}
+
+.formLine input[type=text]{
+	float: left;
+	box-sizing: border-box;
+    border: 2px solid rgb(235,235,235);
+    border-radius: 4px;
+    width: 410px;
+}
+.formLine textarea{
+	float: left;
+	box-sizing: border-box;
+    border: 2px solid rgb(235,235,235);
+    border-radius: 4px;
+    width: 410px;
+    height: 100px;
+    resize:none;
+}
+
+.formLine input[type=number]{
+	float: left;
+	box-sizing: border-box;
+    border: 2px solid rgb(235,235,235);
+    border-radius: 4px;
+    width: 205px;
+}
+
+.formLine input[type=radio]{
+	float:left;
+	margin-left:-5px;
+}
+
+select {
+    width: 200px;
+    border: 2px solid rgb(235,235,235);
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 4px 2px;
+    padding: 1px 0 2px 0;
+}
+
+.formLineDrop {
+	list-style-type: none;
+	overflow:hidden;
+	margin: 5px 0;
+}
+.formLineDrop label {
+	float: left;
+	margin-left: 10px;
+	margin-top: 3px;
+	width: 245px;
+	display:block;
+}
+.formLineDrop input[type=checkbox] {
+	float:left;
+	display:none;
+}
+.formLineDrop input[type=checkbox] + label {
+	background-image:url('../icons/arrowLeft16.png');
+	height: 16px;
+	width: 16px;
+	display:inline-block;
+	padding: 0 0 0 0px;
+	cursor: pointer;
+}
+.formLineDrop input[type=checkbox]:checked + label {
+ 	background-image:url('../icons/arrowDown16.png');
+	height: 16px;
+	width: 16px;
+	display:inline-block;
+	padding: 0 0 0 0px;
+	cursor:pointer;
+}
+
+.formLineWSet {
+    padding-left:8px;
+	list-style-type: none;
+	overflow:hidden;
+	margin: 5px 0;
+}
+.formLineWSet label {
+	float: left;
+	margin-top: 3px;
+	width: 207px;
+	display:block;
+}
+.formLineWSet button {
+	background-color: #333;
+    border: none;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    width: 205px;
+    height: 26px;
+    margin: 4px 2px;
+    float: left;
+}
+.formLineWSet button:hover {
+	background-color: #111;
+}
+.formLineWSet input[type=number]{
+	float: left;
+	box-sizing: border-box;
+    border: 2px solid rgb(235,235,235);
+    border-radius: 4px;
+    width: 205px;
+}
+.formLineWSet input[type=text]{
+	float: left;
+	box-sizing: border-box;
+    border: 2px solid rgb(235,235,235);
+    border-radius: 4px;
+    width: 430px;
+    margin: 4px 2px;
+}
+/*----------------------*/
+/* Hor Form Line Classes*/
+/*----------------------*/
+
+.horFormLine {
+	list-style-type: none;
+}
+
+.horFormLine li {
+	list-style-type: none;
+	margin-left: -15px;
+}
+
+.hFLBlockOne{
+	overflow: hidden;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.hFLBlockOne span {
+	float: left;
+	width: 225px;
+	margin-right: 15px; 
+	font-weight: bold; 
+	font-style:italic;
+}
+
+.hFLBlockOne input[type=checkbox] {
+	float:left;
+	display:none;
+}
+.hFLBlockOne input[type=checkbox] + label {
+	background-image:url('../icons/arrowLeft16.png');
+	height: 16px;
+	width: 16px;
+	display:inline-block;
+	padding: 0 0 0 0px;
+	cursor: pointer;
+}
+.hFLBlockOne input[type=checkbox]:checked + label {
+ 	background-image:url('../icons/arrowDown16.png');
+	height: 16px;
+	width: 16px;
+	display:inline-block;
+	padding: 0 0 0 0px;
+	cursor:pointer;
+}
+
+.hFLBlockTwo {
+	list-style-type: none;
+	margin-left: -10px;
+}
+
+.hFLBottomBlock {
+	overflow:hidden;
+	list-style-type:none;
+	margin-left: -25px;
+}
+
+.hFLBottomBlock li {
+	overflow: hidden;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 10px;
+}
+
+.hFLBottomBlock li span {
+	float: left;
+	width: 215px;
+	font-style: italic;
+}
+
+.hFLBottomBlock li input{
+	float: left;
+	box-sizing: border-box;
+    border: 2px solid rgb(235,235,235);
+    border-radius: 4px;
+    width: 155px;
+}
+
+/*----------------------*/
+/* Black Button classes */
+/*----------------------*/
+
+.blackButton, .blackButton:link {
+	height: 46px;
+	background-color: #333;
+    border: none;
+    color: white;
+    padding: 0 32px 0 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.blackButton:hover{
+	background-color: #111;
+}
+
+.blackLinkButton:link, .blackLinkButton:visited {
+	background-color: #333;
+    border: none;
+    color: white;
+    padding: 14.8px 32px 14.8px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.blackLinkButton:hover, .blackLinkButton:active {
+	background-color: #111;
+}
+
+.blackButtonGS {
+	height: 46px;
+	background-color: #333;
+    border: none;
+    color: white;
+    text-decoration: none;
+    margin: 2px 10px;
+    cursor: pointer;
+    width: 215px;
+}
+
+.blackButtonGS:hover {
+	background-color:#111;
+}
+.blackButtonFixed:link, .blackButtonFixed:visited {
+	height: 23px;
+	width: 200px;
+	background-color: #333;
+    border: none;
+    color: white;
+    padding: 14.8px 32px -14.8px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+}
+
+.blackButtonFixed:hover, .blackButtonFixed:active {
+	background-color: #111;
+}
+
+/*---------------------*/
+/* One time used stuff */
+/*---------------------*/
+.workerLineEl {
+	margin-top:19px;
+	width:200px;
+	display:inline;
+	float:left;
+}
+.optionsWorker {
+	padding-left:25px;
+	padding-top:13px;
+	
+}
+
+.leftSpace  {
+	padding-left: 10px;
+}
+
+.thumb {
+  float: left;
+  margin: -0.5em 1em 1.5em 0;
+  padding-bottom: 1em;
+  height: 100px;
+  width: 100px;
+}
+
+.phones li {
+  clear: both;
+  height: 115px;
+  padding-top: 15px;
+}
+
+body {
+  padding-top: 0px;
+  style="background-color:rgb(235, 235, 235);
+}
+
+.phones {
+  list-style: none;
+}
+
+/*------------------------------------------------*/
+/*test area, highly explosive, keep out, dangerous*/
+/*------------------------------------------------*/
+
+

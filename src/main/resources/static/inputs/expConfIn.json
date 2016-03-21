@@ -1,0 +1,398 @@
+{
+	"taskQuestion": {
+		"class": "simple",
+		"type": "text",
+		"value": "",
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Task Question:", "Fragestellung:"]
+	},
+	"ratingTaskQuestion": {
+		"class": "simple",
+		"type": "text",
+		"value": "",
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Rating Task Question:", "Fragestellung Bewertungsaufgabe:"]
+	},
+	"taskDescription": {
+		"class": "simple",
+		"type": "text",
+		"value": "",
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Task Description:", "Aufgabenbeschreibung:"]
+	},
+	"taskTitle": {
+		"class": "simple",
+		"type": "text",
+		"value": "",
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Task Title:", "Aufgabentitel:"]
+	},
+	"pictureURL": {
+		"class": "simple",
+		"type": "text",
+		"value": "",
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Picture URL:", "Bild URL:"]
+	},
+	"taskSourceURL": {
+		"class": "simple",
+		"type": "text",
+		"value": "",
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Task Source URL:", "Aufgabenquellen URL:"]
+	},
+	"maxCreativeTask": {
+		"class": "simple",
+		"type": "number",
+		"value": -1,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Maximum Amount Of Submitted Creative Tasks:", "Maximale Anzahl Abgegebener Kreativaufgaben:"]
+	},
+	"maxRatingTask": {
+		"class": "simple",
+		"type": "number",
+		"value": -1,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Maximum Amount Of Submitted Rating Tasks:", "Maximale Anzahl Abgegebener Bewertungsaufgaben:"]
+	},
+	"budget": {
+		"class": "simple",
+		"type": "number",
+		"value": -1,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Budget:", "Etat:"]
+	},
+	"basicPaymentMTurk": {
+		"class": "simple",
+		"type": "number",
+		"value": -1,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Basic Payment MTurk", "Grundbezahlung MTurk:"]
+	},
+	"basicPaymentPyBossa": {
+		"class": "simple",
+		"type": "number",
+		"value": -1,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Basic Payment Pybossa:", "Grundbezahlung Pybossa:"]
+	},
+	"paymentPerTaskCrMTurk": {
+		"class": "simple",
+		"type": "number",
+		"value": -1,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Payment Per Creative Task MTurk:", "Bezahlung Pro Kreativaufgabe MTurk:"]
+	},
+	"paymentPerTaskRaMTurk": {
+		"class": "simple",
+		"type": "number",
+		"value": -1,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Payment Per Rating Task MTurk:", "Bezahlung Pro Bewertungsaufgabe MTurk:"]
+	},
+	"paymentPerTaskCrPyBossa": {
+		"class": "simple",
+		"type": "number",
+		"value": -1,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Payment Per Creative Task Pybossa:", "Bezahlung pro Kreativaufgabe Pybossa:"]
+	},
+	"paymentPerTaskRaPyBossa": {
+		"class": "simple",
+		"type": "number",
+		"value": -1,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Payment Per Rating Task Pybossa:", "Bezahlung pro Bewertungsaufgabe Pybossa:"]
+	},
+	"totalTaskCountThreshold": {
+		"class": "simple",
+		"type": "number",
+		"value": -1,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Total Task Count Threshold:", "Schwelle der Gesamtaufgabenanzahl:"]
+	},
+	"averageRatingThreshold": {
+		"class": "simple",
+		"type": "number",
+		"value": -1,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Average Rating Threshold:", "Schwelle der Durchschnittsbertungen:"]
+	},
+	"sendCreativeToMTurk": {
+		"class": "simple",
+		"type": "checkbox",
+		"value": false,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Send Creative Tasks to MTurk", "Sende Kreativaufgaben zu MTurk"]
+	},
+	"sendCreativeToPyBossa": {
+		"class": "simple",
+		"type": "checkbox",
+		"value": false,
+		"isVisible": true,
+		"isCore": true,
+		"label": ["Send Creative Tasks to Pybossa", "Sende Kreativaufgaben zu Pybossa"]
+	},
+	"sendRatingToMTurk": {
+		"class": "simple",
+		"type": "checkbox",
+		"value": false,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Send Rating Tasks to MTurk", "Sende Bewertungsaufgaben zu MTurk"]
+	},
+	"sendRatingToPyBossa": {
+		"class": "simple",
+		"type": "checkbox",
+		"value": false,
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Send Rating Tasks to Pybossa", "Sende Bewertungsaufgaben zu Pybossa"]
+	},
+	"taskTags": {
+		"class": "list",
+		"type": "text",
+		"value": [],
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Tags:", "Schlagworte:"]
+	},
+	"controlQuestions": {
+		"class": "listlist",
+		"type": "text",
+		"value": [],
+		"isVisible": true,
+		"isCore": true,
+		"label": ["Control Questions:", "Kontrollfragen:"]
+	},
+	"qualificationsMTurk": {
+		"class": "list",
+		"type": "text",
+		"value": [],
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Needed MTurk Qualifications:", "Erforderliche MTurk-Qualifikationen:"]
+	},
+	"qualificationsPyBossa": {
+		"class": "list",
+		"type": "text",
+		"value": [],
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Needed Pybossa Qualifications:", "Erforderliche Pybossa-Qualifikationen:"]
+	},
+	"ratingOptions": {
+		"class": "valueTextList",
+		"type": "text",
+		"value": [],
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Rating Options:", "Bewertungsoptionen:"]
+	},	
+	"calibQuestions": {
+		"class": "choices",
+		"type": "text",
+		"value": [],
+		"options": {},
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Calibration Questions:", "Kalibrierungsfragen:"]
+	},
+	"evaluationType": {
+		"class": "select",
+		"type": "text",
+		"value": "",
+		"isCore": true,
+		"options": ["edu.kit.ipd.creativecrowd.view.GenericRatingView",
+		 "edu.kit.ipd.creativecrowd.view.StarRatingView", "edu.kit.ipd.creativecrowd.view.ThumbRatingView"],
+		"isVisible": true,
+		"label": ["Evaluation Types:", "Auswertungsart:"]
+	},
+	"experimentType": {
+		"class": "select",
+		"type": "text",
+		"value": "Text",
+		"isCore": true,
+		"options": ["Bild", "Text"],
+		"isVisible": true,
+		"label": ["Experiment Type:", "Experiment-Typ:"]
+	},
+	"strategy": {
+		"isVisible": true,
+		"isCore": true,
+		"class": "complex",
+		"options": [{
+			"class": "apoc_class",
+			"isUsed": false,
+			"usedImplementation": 0,
+			"implementations": [{
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.DefaultAPOC",
+				"params": []
+			}, {
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.BestOfAbsolutePaymentCalc",
+				"params": [{
+					"id": "apoc.workers_to_receive_bonus",
+					"value": -1.0,
+					"isUsed": false
+				}, {
+					"id": "apoc.bonusPool",
+					"value": -1,
+					"isUsed": false
+				}, {
+					"id": "apoc.weight_of_answer",
+					"value": -1.0,
+					"isUsed": false
+				}]
+			}]
+		}, {
+			"class": "tcm_class",
+			"isUsed": false,
+			"usedImplementation": 0,
+			"implementations": [{
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.BoehmscherTCM",
+				"params": [{
+					"id": "tcm.answersBeforeRatings",
+					"value": -1,
+					"isUsed": false
+				}, {
+					"id": "tcm.parallelAssignments",
+					"value": -1,
+					"isUsed": false
+				}]
+			}, {
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.FreeformTaskConstellationMutator",
+				"params": [{
+					"id": "tcm.ratings_per_task",
+					"value": -1,
+					"isUsed": false
+				}]
+			}]
+		}, {
+			"class": "rqic_class",
+			"isUsed": false,
+			"usedImplementation": 0,
+			"implementations": [{
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.ensureRatingDiversity",
+				"params": [{
+					"id": "rqic.quorum",
+					"value": -1,
+					"isUsed": false
+				}, {
+					"id": "rqic.threshold",
+					"value": -1.0,
+					"isUsed": false
+				}, {
+					"id": "rqic.val_good",
+					"value": -1.0,
+					"isUsed": false
+				}, {
+					"id": "rqic.val_bad",
+					"value": -1.0,
+					"isUsed": false
+				}]
+			}, {
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.consentRQIC",
+				"params": []
+			}]
+		}, {
+			"class": "aqic_class",
+			"isUsed": false,
+			"usedImplementation": 0,
+			"implementations": [{
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.MedianRating",
+				"params": []
+			}]
+		}, {
+			"class": "rsd_class",
+			"isUsed": false,
+			"usedImplementation": 0,
+			"implementations": [{
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.consentRatingDecider",
+				"params": [{
+					"id": "rsd.quorum",
+					"value": -1,
+					"isUsed": false
+				}, {
+					"id": "rsd.allowed_stddev",
+					"value": -1.0,
+					"isUsed": false
+				}]
+			}, {
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.FixedRatingsPerAnswerDecider",
+				"params": [{
+					"id": "rsd.n",
+					"value": -1,
+					"isUsed": false
+				}]
+			}]
+		}, {
+			"class": "ftg_class",
+			"isUsed": false,
+			"usedImplementation": 0,
+			"implementations": [{
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.FeedbackWithoutRatingText",
+				"params": [{
+					"id": "ftg.rejection_message",
+					"value": "",
+					"isUsed": false
+				}, {
+					"id": "ftg.approval_message",
+					"value": "",
+					"isUsed": false
+				}, {
+					"id": "ftg.bonus_granted_message",
+					"value": "",
+					"isUsed": false
+				}]
+			}, {
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.FeedbackWithRatingText",
+				"params": [{
+					"id": "ftg.rejection_message",
+					"value": "",
+					"isUsed": false
+				}, {
+					"id": "ftg.approval_message",
+					"value": "",
+					"isUsed": false
+				}, {
+					"id": "ftg.bonus_granted_message",
+					"value": "",
+					"isUsed": false
+				}]
+			}]
+		}, {
+			"class": "tacc_class",
+			"isUsed": false,
+			"usedImplementation": 0,
+			"implementations": [{
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.NAssignments",
+				"params": [{
+					"id": "tacc.n",
+					"value": -1,
+					"isUsed": false
+				}]
+			}, {
+				"id": "edu.kit.ipd.creativecrowd.operations.strategies.WorstCaseCalc",
+				"params": []
+			}]
+		}]
+	}
+}

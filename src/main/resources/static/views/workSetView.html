@@ -1,0 +1,41 @@
+<div>
+    <div class="formLine" style="margin-top:10px">
+        <label style="width:205px;">{{labels.taskQuestion[lang]}}</label>
+        <input style="width:102px; margin-right:15px;" ng-model="basicPayment" id="paymentValue" type="number" min="0.01" step="0.01">{{labels.euro[lang]}}</input>
+        <button style="margin-left:88px;" ng-click="save(basicPayment)">{{labels.save[lang]}}</button>
+    </div>
+    <div>
+        <div class="formLine">
+            <label>{{labels.calibQuestions[lang]}}</label>
+        </div>
+        <ul style="margin: 0 0 0 -15px;">
+            <li class="formLine" ng-repeat="calibQuestion in model.calibQuestions">
+                <span>{{calibQuestion.question}}</span>
+                <button ng-click="removeCalibQuest(model.calibQuestions, $index)">
+                    {{labels.removeCQ[lang]}}</button>
+                <button ng-hide="calibQuestion.id !== undefined" ng-click="saveCalibrationQuestion(model.calibQuestions, $index)">
+                    {{labels.saveCQ[lang]}}</button>
+                <ul style="margin: 0 0 0 -20px;">
+                    <li class="formLine" ng-repeat="possibleAnswer in calibQuestion.possibleAnswers">
+                        <input type="checkbox" ng-model="selected" ng-disable="calibQuestion.id !== undefined" ng-change="changeStatus(possibleAnswer)"></input>
+                        <span style="margin-right: 15px; width:255.5px; font-style:italic;">{{possibleAnswer.text}}</span>
+                        <button style="width:102.5px;" ng-click="removePossibleAnswer(calibQuestion, $index)" ng-hide="calibQuestion.id !== undefined">
+                            {{labels.remove[lang]}}</button>
+                    </li>
+                    <li class="formLine" ng-hide="calibQuestion.id !== undefined">
+                        <input type="text" style="margin-right: 15px;  width:271.5px;" class="" ng-model="item">
+                        <button style="width:102.5px;" ng-click="addPossibleAnswer(calibQuestion, this)">
+                            {{labels.add[lang]}}</button>
+                    </li>
+                </ul>
+                
+            </li>
+            <li class="formLine">
+                <input type="text" style="margin-right: 20px;" class="" ng-model="item">
+                <button ng-click="addCalibQuest(model.calibQuestions, this)">
+                    {{labels.addCQ[lang]}}</button>
+            </li>
+        </ul>
+    </div>
+    <pre>{{model.calibQuestions | json}}</pre>
+</div>

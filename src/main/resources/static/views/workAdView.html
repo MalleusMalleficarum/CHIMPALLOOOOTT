@@ -1,0 +1,52 @@
+<div>
+	<ul class="verList" style="margin: 0 0 -10px -30px;">
+		<li class="searchTop" style="float: left;"><input style="padding-bottom:3px; padding-top:2px;"
+			class="searchField" ng-model="myquery" placeholder="{{labels.searchW[lang]}}"
+			size="40"> </input></li>
+		<li><label style="float:left; margin-left: 20px; margin-top:14px;">{{labels.sortB[lang]}}</label></li>
+		<li><select style="margin-left: 20px; margin-top:11px;"
+			ng-model="orderProp">
+				<option value="name">{{labels.alphab[lang]}}</option>
+				<option value="email">{{labels.eMail[lang]}}</option>
+		</select></li>
+	</ul>
+  <div class="administrationList">
+
+		<div class="col-*-2">
+			<ul style="list-style-type:none;">
+				<li ng-model="worker"
+					ng-repeat="worker in workers | filter:myquery | orderBy:orderProp">
+          <input class="verListDetailsShown" style="float:left; margin-top:23px;" type="checkbox" ng-model="showDetails"></input>
+          <span  class="workerLineEl verListName">{{worker.name}}</span>
+          <span  class="workerLineEl verListID" >{{'  ID: ' + worker.id}}</span>
+          <span  class="workerLineEl verListMail" >{{labels.eMail[lang]+ ':' +worker.email}}</span>
+          <span  class="workerLineEl verListMail" style="width:130px;">{{labels.cred[lang] + worker.credit + ' Euro  '}}</span>
+          <button class="blackButton" ng-click="pay(worker.id)"
+            ng-disable="worker.credits <= paymentThreshold">{{labels.pay[lang]}}</button>
+          <button class="blackButton" ng-click="block(worker.id)">{{labels.blockW[lang]}}</button>
+
+					<div ng-hide="!showDetails">
+            <span>Worker Answers:</span>
+            <ul>
+              <li ng-repeat="answer in worker.answers">
+                <span>{{answer}}</span>
+              </li>
+            </ul>
+            <span>Worker Ratings:</span>
+            <ul>
+              <li ng-repeat="rating in worker.ratings">
+                <span>{{rating}}</span>
+              </li>
+            </ul>
+            <span>Worker Calibration Answers:</span>
+            <ul>
+              <li ng-repeat="calAn in worker.calibrationAnswers">
+                <span>{{calAn}}</span>
+              </li>
+            </ul>
+					</div>
+		  </li>
+		</ul>
+    <pre>{{workers | json}}</pre>
+	</div>
+</div>

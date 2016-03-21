@@ -1,0 +1,7 @@
+
+{
+	"url" : "worker/:experimentid/:workerid/creativetask/:creativetaskid/creativeanswer",
+	"workerid" : 2,
+	"creativetaskid" : 22,
+	"answer" : "The cake is a lie!"
+}

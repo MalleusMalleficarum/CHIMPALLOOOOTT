@@ -1,0 +1,10 @@
+{
+  "prefTmps":["Prefabricated Templates:", "Vorgefertigte Vorlagen:"],
+  "emptyTmp":["Empty Template", "Leere Vorlage"],
+  "meanTweetTemplate":["Mean Tweet", "Gemeiner Tweet"],
+  "topicPictureTemplate":["Topic Picture", "Themenbild"],
+  "photoJokeTemplate":["Photo Joke", "Fotowitz"],
+  "ownTmps":["Own Templates:", "Eigene Vorlagen:"],
+  "dlTmp":["Delete Template", "Lösche Vorlage"],
+  "search":["Search..", "Suche.."]
+}

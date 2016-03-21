@@ -1,0 +1,28 @@
+<body>
+	<ul class="verListButtons">
+    	<li>
+     	 	<a class="blackButtonFixed" href="#/expconf/new/empty">{{labels.emptyTmp[lang]}}</a>
+    	</li>
+    	<li>
+			<label style="margin-left:-10px;">{{labels.prefTmps[lang]}}</label>
+		</li>
+		<li>
+     	 	<a class="blackButtonFixed" href="#/expconf/new/meanTweetTemplate">{{labels.meanTweetTemplate[lang]}}</a>
+    	</li>
+			<li>
+     	 	<a class="blackButtonFixed" href="#/expconf/new/topicPictureTemplate">{{labels.topicPictureTemplate[lang]}}</a>
+    	</li>
+			<li>
+     	 	<a class="blackButtonFixed" href="#/expconf/new/photoJokeTemplate">{{labels.photoJokeTemplate[lang]}}</a>
+    	</li>
+		<li class="formLineWSet" style="margin-left:-18px;">
+			<label style="margin-right: 11px;">{{labels.ownTmps[lang]}}</label>
+			<input style="margin-top:0; width: 200px;" type="text" ng-model="query" placeholder="{{labels.search[lang]}}"></input>
+		</li>
+    	<li ng-repeat="confModel in confModels | filter:query |	orderBy:confModel">
+      		<a class="blackButtonFixed" href="#/expconf/new/{{confModel}}">
+							{{confModel}}</a>
+					<button class="blackButton" style="width:200px; height:23px;" ng-click="delete(confModel)">{{labels.dlTmp[lang]}}</button>
+    	</li>
+  	</ul>
+</body>

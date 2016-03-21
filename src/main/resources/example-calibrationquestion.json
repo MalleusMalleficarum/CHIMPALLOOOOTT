@@ -1,0 +1,16 @@
+{
+  "id": "calibrationqid",
+  "question": "How old are you?",
+  "possibleAnswers": [
+    {
+      "id": "answer1",
+      "text": "Younger than 18",
+      "istrue": false
+    },
+    {
+      "id": "answer2",
+      "text": "18 or older",
+      "istrue": true
+    }
+  ]
+}

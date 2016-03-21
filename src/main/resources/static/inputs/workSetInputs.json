@@ -1,0 +1,11 @@
+{
+	"taskQuestion": {
+		"class": "checkSelectList",
+		"type": "text",
+		"value": [[]],
+		"options": [[]],
+		"isCore": true,
+		"isVisible": true,
+		"label": ["Calibration Quesition", "Kalibrierungsfrage"]
+	}
+}

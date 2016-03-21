@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" ng-app="chimpalotApp">
+<head>
+  <meta charset="utf-8">
+  <title>Chimpalot</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-route.js"></script>
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="styles/globStyle.css">
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="app.js"></script>
+  <script src="controllers/expAdCtrl.js"></script>
+  <script src="controllers/expConfCtrl.js"></script>
+  <script src="controllers/workAdCtrl.js"></script>
+  <script src="controllers/workSetCtrl.js"></script>
+  <script src="controllers/confModelsCtrl.js"></script>
+  <script src="controllers/rootCtrl.js"></script>
+  <script src="services/validationService.js"></script>
+  <script src="services/modelToInputsService.js"></script>
+  <script src="services/hideInputService.js"></script>
+  <script src="services/inputsToModelService.js"></script>
+  <script src="services/autofillsService.js"></script>
+</head>
+<body ng-controller="RootCtrl">
+  <ul class="topList">
+      <li><a href="#/expAd">{{labels.expAd[lang]}}</a></li>
+      <li><a href="#/workAd">{{labels.workAd[lang]}}</a></li>
+      <li><a href="#/workSet">{{labels.workSet[lang]}}</a></li>
+      <li><a href="#/confModels">{{labels.newExp[lang]}}</a></li>
+      <li><select ng-model="lang">
+        <option value="0">{{labels.lang[lang][0]}}</option>
+        <option value="1">{{labels.lang[lang][1]}}</option>
+      </select>
+    </li>
+  </ul>
+
+  <div ng-view></div>
+
+</body>

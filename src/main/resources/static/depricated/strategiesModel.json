@@ -1,0 +1,212 @@
+[
+  {
+    "class":"apoc_class",
+    "isUsed":false,
+    "usedImplementation": 0,
+    "implementations": [
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.DefaultAPOC",
+        "params": []
+      },
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.BestOfAbsolutePaymentCalc",
+        "params": [
+          {
+            "id":"apoc.workers_to_receive_bonus",
+            "value": -1.0,
+            "isUsed":false
+          },
+          {
+            "id":"apoc.bonusPool",
+            "value": -1,
+            "isUsed":false
+          },
+          {
+            "id":"apoc.weight_of_answer",
+            "value": -1.0,
+            "isUsed":false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "class":"tcm_class",
+    "isUsed":false,
+    "usedImplementation": 0,
+    "implementations": [
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.BoehmscherTCM",
+        "params": [
+          {
+            "id":"tcm.answersBeforeRatings",
+            "value": -1,
+            "isUsed":false
+          },
+          {
+            "id":"tcm.parallelAssignments",
+            "value": -1,
+            "isUsed":false
+          }
+        ]
+      },
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.FreeformTaskConstellationMutator",
+        "params": [
+          {
+            "id":"tcm.ratings_per_task",
+            "value": -1,
+            "isUsed":false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "class":"rqic_class",
+    "isUsed":false,
+    "usedImplementation": 0,
+    "implementations": [
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.ensureRatingDiversity",
+        "params": [
+          {
+            "id":"rqic.quorum",
+            "value": -1,
+            "isUsed":false
+          },
+          {
+            "id":"rqic.threshold",
+            "value": -1.0,
+            "isUsed":false
+          },
+          {
+            "id":"rqic.val_good",
+            "value": -1.0,
+            "isUsed":false
+          },
+          {
+            "id":"rqic.val_bad",
+            "value": -1.0,
+            "isUsed":false
+          }
+        ]
+      },
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.consentRQIC",
+        "params": []
+      }
+    ]
+  },
+  {
+    "class":"aqic_class",
+    "isUsed":false,
+    "usedImplementation": 0,
+    "implementations": [
+      {
+        "id":"MedianRating",
+        "params": []
+      }
+    ]
+  },
+  {
+    "class":"rsd_class",
+    "isUsed":false,
+    "usedImplementation": 0,
+    "implementations": [
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.consentRatingDecider",
+        "params": [
+          {
+            "id":"rsd.quorum",
+            "value": -1,
+            "isUsed":false
+          },
+          {
+            "id":"rsd.allowed_stddev",
+            "value": -1.0,
+            "isUsed":false
+          }
+        ]
+      },
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.FixedRatingsPerAnswerDecider",
+        "params": [
+          {
+            "id":"rsd.n",
+            "value": -1,
+            "isUsed":false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "class":"ftg_class",
+    "isUsed":false,
+    "usedImplementation": 0,
+    "implementations": [
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.FeedbackWithoutRatingText",
+        "params": [
+          {
+            "id":"ftg.rejection_message",
+            "value": "",
+            "isUsed":false
+          },
+          {
+            "id":"ftg.approval_message",
+            "value": "",
+            "isUsed":false
+          },
+          {
+            "id":"ftg.bonus_granted_message",
+            "value": "",
+            "isUsed":false
+          }
+        ]
+      },
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.FeedbackWithRatingText",
+        "params": [
+          {
+            "id":"ftg.rejection_message",
+            "value": "",
+            "isUsed":false
+          },
+          {
+            "id":"ftg.approval_message",
+            "value": "",
+            "isUsed":false
+          },
+          {
+            "id":"ftg.bonus_granted_message",
+            "value": "",
+            "isUsed":false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "class":"tacc_class",
+    "isUsed":false,
+    "usedImplementation": 0,
+    "implementations": [
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.NAssignments",
+        "params": [
+          {
+            "id":"tacc.n",
+            "value": -1,
+            "isUsed":false
+          }
+        ]
+      },
+      {
+        "id":"edu.kit.ipd.creativecrowd.operations.strategies.WorstCaseCalc",
+        "params": []
+      }
+    ]
+  }
+]

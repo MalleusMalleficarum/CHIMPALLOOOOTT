@@ -1,0 +1,15 @@
+[
+	{
+		"url" : "worker/:experimentid/creativetask/:creativetaskid/ratingtask"
+		"creativetask" : "Say something nice!",
+		"creativetaskid" : 2,
+		"ratingtaskid" : 23,
+		"description" : "Was this answer offensive?",
+		"answers" :
+			[
+			"Yes",
+			"No"
+			]
+		"avaliable" : true
+	}
+]

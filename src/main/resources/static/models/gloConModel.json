@@ -1,0 +1,8 @@
+{
+  "configAWSAccessKeyId": "sdfsd",
+  "configAWSSecretKey": "sdfsd",
+  "configDBPath":"",
+  "configPublicBaseURL": "sdfsd",
+  "configSandbox": false,
+  "requesterCredentials": ""
+}

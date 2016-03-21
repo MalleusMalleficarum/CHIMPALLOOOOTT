@@ -1,0 +1,10 @@
+{
+  "expAd":["Experiment Administration", "Experimentadministration"],
+  "workAd":["Worker Administration", "Arbeiterverwaltung"],
+  "workSet":["Worker Settings", "Arbeitereinstellungen"],
+  "newExp":["New Experiment", "Neues Experiment"],
+  "lang":[
+    ["English", "German"],
+    ["Englisch", "Deutsch"]
+  ]
+}

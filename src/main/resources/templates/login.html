@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Chimpalot</title>
+    </head>
+    <style>
+    	.wrongInput {
+    		color: red;
+    		width: 225px;
+    		margin: 4px 18px;
+    	}
+    	.logOut {
+    		color: green;
+    		margin:4px 35px;
+    	}
+    	.centralBlock {
+    		width: 175px;
+    		margin:auto;
+    		background-color:#b3b3b3;
+    	}
+    	.centralBlockLabel {
+    		margin: 4px 35px;
+    	}
+    	.centralBlockInput {
+    		width: 175px;
+    		float: left;
+			box-sizing: border-box;
+    		border: 2px solid rgb(235,235,235);
+    		border-radius: 4px;
+    		margin: 4px 35px;
+    	}
+    	.blackButton {
+			height: 46px;
+			background-color: #333;
+   			border: none;
+    		color: white;
+    		padding: 0 32px 0 32px;
+    		text-decoration: none;
+    		margin: 4px 35px;
+    		cursor: pointer;
+    		width: 175px;
+    		
+		}
+		.blackButton:hover {
+			background-color: #111;
+		}
+		.loginBlock {
+			margin-top: 80%;
+			width: 245px;
+			height: 225px;
+			padding: 10px 0;
+			background-color: #4d4d4d;
+			box-sizing: border-box;
+			border: 2px solid rgb(235,235,235);
+    		border-radius: 4px;
+		}
+    </style>
+    <body class="centralBlock">
+    <div class="loginBlock">
+        <div class="centralBlockItem" th:if="${param.error}">
+            <label class="wrongInput">Invalid user name and password.</label>
+        </div>
+        <div th:if="${param.logout}">
+            <label class="logOut">You have been logged out.</label>
+        </div>
+        <form th:action="@{login}" method="post">
+            <div>
+            	<label class="centralBlockLabel">User Name</label> 
+            	<input class="centralBlockInput" type="text" name="username"/> 
+            </div>
+            <div>
+            	<label class="centralBlockLabel">Password</label> 
+            	<input class="centralBlockInput" type="password" name="password"/> 
+            </div>
+            <div><input class="blackButton" type="submit" value="Sign In"/></div>
+        </form>
+        </div>
+    </body>
+</html>

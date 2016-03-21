@@ -1,0 +1,32 @@
+[
+  {
+    "WorkerId":1,
+    "name":"karl",
+    "credit":100,
+    "email":"hallo@welt.de"
+  },
+  {
+    "WorkerId":2,
+    "name":"heinz",
+    "credit":200,
+    "email":"heinz@ketchup.com"
+  },
+  {
+    "WorkerId":3,
+    "name":"bert",
+    "credit":0,
+    "email":"sesamstrasse@attentate.bgm"
+  },
+  {
+    "WorkerId":4,
+    "name":"günther",
+    "credit":42,
+    "email":"noreply@webdemon"
+  },
+  {
+    "WorkerId":5,
+    "name":"rafael",
+    "credit":2,
+    "email":"-anonym-"
+  }
+]

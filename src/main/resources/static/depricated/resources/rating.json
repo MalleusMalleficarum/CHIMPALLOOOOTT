@@ -1,0 +1,13 @@
+[
+	{
+		"url" : "worker/:experimentid/creativetask/:creativetaskid/ratingtask/:ratingtaskid/rating",
+		"answerid" : 2,
+		"ratingtaskid" : 31,
+		"rating" : "TODO"
+	},
+	{
+		"answerid" : 3,
+		"ratingtaskid" : 32,
+		"rating" : "TODO"
+	}
+]

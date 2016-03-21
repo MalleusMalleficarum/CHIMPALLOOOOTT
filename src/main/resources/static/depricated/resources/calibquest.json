@@ -1,0 +1,14 @@
+[
+	{
+	"url" : "/worker/:workerid/:experimentid/calibtask",
+	"id" : 5,
+	"question" : "What is your profession?",
+	"answers" :
+		{
+		"Engineer" : "true",
+		"PHler" : "false",
+		"min" : "1",
+		"max": "30"
+		}
+	}
+]

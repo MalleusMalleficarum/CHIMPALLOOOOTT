@@ -1,0 +1,14 @@
+{
+    "id": "",
+    "finished": false,
+    "config": "",
+    "stats": {
+	      "cancelledCount": -1,
+	      "previewClicksCount": -1,
+	      "acceptedHitCount": -1,
+	      "submissionCount": -1,
+	      "ratingCount": -1,
+	      "timestampBegin": "",
+	      "lastSubmission": ""
+    }
+}

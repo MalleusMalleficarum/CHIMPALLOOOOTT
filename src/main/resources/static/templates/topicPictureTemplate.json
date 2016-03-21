@@ -1,0 +1,71 @@
+{
+	"extraInputs": {
+		"topic": {
+			"class": "simple",
+			"type": "text",
+			"value": "",
+			"isVisible": true,
+			"label": ["Topic:", "Thema:"]
+		}
+	},
+	"autofills": [{
+		"filledField": "taskQuestion",
+		"fillingField": "topic",
+		"prefixLabel": ["Find a picture about ", "Finde ein Bild zum Thema "],
+		"suffixLabel": ["",""]
+	}, {
+		"filledField": "ratingTaskQuestion",
+		"fillingField": "topic",
+		"prefixLabel": ["Is this picture about ", "Ist dieses Bild zum Thema "],
+		"suffixLabel": [" good?", " gut?"]
+	}, {
+		"filledField": "taskDescription",
+		"fillingField": "topic",
+		"prefixLabel": ["Find a picture about ", "Finde ein Bild zum Thema "],
+		"suffixLabel": ["",""]
+	}, {
+		"filledField": "taskTitle",
+		"fillingField": "topic",
+		"prefixLabel": ["Picture about ", "Bild zum Thema "],
+		"suffixLabel": ["",""]
+	}],
+	"prefills": {
+		"maxCreativeTask": 10,
+		"maxRatingTask": 100,
+		"budget": 300,
+		"sendCreativeToMTurk": true,
+		"sendCreativeToPyBossa": true,
+		"sendRatingToMTurk": true,
+		"sendRatingToPyBossa": true,
+		"basicPaymentMTurk": 5,
+		"basicPaymentPyBossa": 5,
+		"paymentPerTaskCrMTurk": 10,
+		"paymentPerTaskRaMTurk": 5,
+		"paymentPerTaskCrPyBossa": 20,
+		"paymentPerTaskRaPyBossa": 10,
+		"evaluationType": "edu.kit.ipd.creativecrowd.view.GenericRatingView",
+		"experimentType": "Bild"
+	},
+	"invisible": [
+		"maxCreativeTask",
+		"maxRatingTask",
+		"budget",
+		"sendCreativeToMTurk",
+		"sendCreativeToPyBossa",
+		"sendRatingToMTurk",
+		"sendRatingToPyBossa",
+		"basicPaymentMTurk",
+		"basicPaymentPyBossa",
+		"paymentPerTaskCrMTurk",
+		"paymentPerTaskRaMTurk",
+		"paymentPerTaskCrPyBossa",
+		"paymentPerTaskRaPyBossa",
+		"evaluationType",
+		"pictureURL",
+		"taskSourceURL",
+		"totalTaskCountThreshold",
+		"averageRatingThreshold",
+		"experimentType"
+	],
+	"validations": []
+}

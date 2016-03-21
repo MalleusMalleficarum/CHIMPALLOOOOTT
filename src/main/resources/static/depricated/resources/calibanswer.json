@@ -1,0 +1,11 @@
+
+{
+	"url" : "worker/:workerid/:experimentid/calibtask/calibanswer",
+	"workerid" : "2",
+	"answers" :
+	{
+		"calibquestid1" :"answerid1",
+		"calibquestid2" :"answerid2",
+		"calibquestid3" : "freie texteingabe vom worker"
+	}
+}

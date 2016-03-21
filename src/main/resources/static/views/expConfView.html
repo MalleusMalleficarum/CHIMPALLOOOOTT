@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<div>
+    <div>
+        <ul class="horFormLine" style="margin-left:-30px;">
+            <li ng-repeat='(id, input) in inputs' ng-if='input.isVisible'>
+                <div class="formLine" ng-if='input.class === "simple"'>
+                    <label>{{input.label[lang]}}</label>
+                    <input type="{{input.type}}" ng-model="input.value" ng-change="autofill(id, lang)"></input>
+                </div>
+                <div ng-if='input.class === "list"'>
+                    <div class="formLine">
+                        <label>{{input.label[lang]}}</label>
+                    </div>
+                    <ul>
+                        <li class="formLine" ng-repeat="item in input.value">
+                            <span style="margin-right: 15px;">{{item}}</span>
+                            <button ng-click="removeItem(input.value, $index)">
+                                {{labels.remove[lang]}}</button>
+                        </li>
+                        <li class="formLine">
+                            <input type="{{input.type}}" style="margin-right: 35px;" class="" ng-model="newItem">
+                            <button ng-click="addItem(input.value, this)">
+                                {{labels.add[lang]}}</button>
+                        </li>
+                    </ul>
+                </div>
+                <div ng-if='input.class === "valueTextList"'>
+                    <div class="formLine">
+                        <label>{{input.label[lang]}}</label>
+                    </div>
+                    <ul>
+                        <li class="formLine" ng-repeat="item in input.value">
+                            <span style="margin-right: 15px;">{{item.text}}</span>
+                            <span style="margin-right: 15px;">{{item.value}}</span>
+                            <button ng-click="removeItem(input.value, $index)">
+                                {{labels.remove[lang]}}</button>
+                        </li>
+                        <li class="formLine">
+                            <input type="text" style="margin-right: 35px;" class="" ng-model="newText">
+                            <input type="number" style="margin-right: 35px;" class="" ng-model="newValue">
+                            <button ng-click="addValueTextItem(input.value, this)">
+                                {{labels.add[lang]}}</button>
+                        </li>
+                    </ul>
+                </div>
+                <div ng-if='input.class === "select"'>
+                    <div class="formLineDrop">
+                        <label>{{input.label[lang]}}</label>
+                        <input type="checkbox" id="input.evaType" ng-model="selectsVisible"></input>
+                        <label for="input.evaType"></label>
+                    </div>
+                    <div>
+                        <ul class="evalTypes hFLBlockTwo">
+                            <li class="formLine" ng-repeat="option in input.options">
+                                <input style="margin-left: 10px;" type="radio" ng-model="input.value" value="{{option}}"></input>
+                                <span>{{option}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div ng-if='input.class === "choices"'>
+                    <div class="formLineDrop">
+                        <label>{{input.label[lang]}}</label>
+                        <input type="checkbox" id="input.evaType" ng-model="input.choicesVisible"></input>
+                        <label for="input.evaType"></label>
+                    </div>
+                    <div ng-hide="!input.choicesVisible">
+                        <ul class="evalTypes hFLBlockTwo">
+                            <li class="formLine" ng-repeat="option in input.options">
+                                <input style="margin-left: 10px;" type="checkbox" ng-model="check" ng-change="changeStatus(input.value,option)"=></input>
+                                <span>{{option.question}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div ng-if='input.class === "complex"'>
+                    <div class="formLine">
+                        <label>{{labels.strategies[lang]}}</label>
+                    </div>
+                    <ul class="strategies horFormLine">
+                        <li ng-repeat="strategy in inputs.strategy.options">
+                            <div class="hFLBlockOne">
+                                <span>{{strategy.class}}</span>
+                                <input id={{strategy.class}} type="checkbox" ng-model="strategy.isUsed"></input>
+                                <label for={{strategy.class}}></label>
+                            </div>
+                            <div ng-hide="!strategy.isUsed" class="ng-hide">
+                                <ul class="implementations hFLBlockTwo">
+                                    <li class="" ng-repeat="implementation in strategy.implementations">
+                                        <input type="radio" style="margin-left:0;" ng-model="strategy.usedImplementation" value="{{$index}}"></input>
+                                        <span>{{implementation.id | limitTo : implementation.id.length - 48 : 48}}</span>
+                                        <div ng-hide="strategy.usedImplementation != $index" class="ng-hide">
+                                            <ul class="params hFLBottomBlock">
+                                                <li ng-repeat="param in implementation.params">
+                                                    <span>{{param.id}}</span>
+                                                    <input ng-model="param.value" ng-change="param.isUsed = true"></input>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div ng-if='input.class === "listlist"'>
+                    <div class="formLine">
+                        <label>{{input.label[lang]}}</label>
+                    </div>
+                    <ul style="margin: 0 0 0 0;">
+                        <li class="formLine" ng-repeat="controlQuestion in input.value">
+                            <span>{{controlQuestion.question}}</span>
+                            <button style="margin-left:15px;" ng-click="removeItem(input.value, $index)">
+                                {{labels.remove[lang]}}</button>
+                            <ul style="margin: 0 0 0 -5px;">
+                                <li class="formLine" ng-repeat="possibleAnswer in controlQuestion.possibleAnswers">
+                                    <input type="checkbox" ng-model="selected" ng-change="changeControlStatus(possibleAnswer)"></input>
+                                    <span style="margin-right: 15px; width:255.5px; font-style:italic;">{{possibleAnswer.text}}</span>
+                                    <button style="width:102.5px;" ng-click="removePossibleAnswer(controlQuestion, $index)">
+                                        {{labels.remove[lang]}}</button>
+                                </li>
+                                <li class="formLine">
+                                    <input type="text" style="margin-right: 15px;  width:271.5px;" class="" ng-model="item">
+                                    <button style="width:102.5px;" ng-click="addPossibleAnswer(controlQuestion, this)">
+                                        {{labels.add[lang]}}</button>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="formLine">
+                            <input type="text" style="margin-right: 35px;" class="" ng-model="item">
+                            <button ng-click="addControlQuest(input.value, this)">
+                                {{labels.add[lang]}}</button>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="formLine">
+        <label>{{labels.saveConfig[lang]}}</label>
+        <input type="radio" ng-model="uploadOption" value="0"></input>
+    </div>
+    <div class="formLine">
+        <label>{{labels.startExperiment[lang][runStatus]}}</label>
+        <input type="radio" ng-model="uploadOption" value="1" ng-click="validate()"></input>
+    </div>
+    <div ng-hide="uploadOption !== 0" class="ng-hide">
+        <div class="formLine">
+            <label>{{labels.confId[lang]}}</label>
+            <input style="margin-left:-5px;" type="text" ng-model="model.id"></input>
+        </div>
+        <button class="blackButton" style="margin-left:10px; width:200px; height:23px;" ng-click="save()">{{labels.saveConfig[lang]}}</button>
+    </div>
+    <div ng-hide='uploadOption !== 1' class="ng-hide">
+        <div class="formLine" ng-hide="{{expIdHidden}}">
+            <label>{{labels.expId[lang]}}</label>
+            <input style="margin-left:-5px;" type="text" ng-model="expId" value='NULL' ng-disabled="runStatus == 1"></input>
+        </div>
+        <a ng-hide='expId === NULL || expId === ""' class="blackButtonFixed" style="margin-left: 10px;" ng-click="start()" href="#/expAd">{{labels.startExperiment[lang][runStatus]}}</a>
+    </div>
+    <div>
+        <button class="blackButton" style="width:200px; margin-left:10px;" ng-click="creativePreview()">
+            {{labels.creativePreview[lang]}}</button>
+    </div>
+    <!--<div ng-bind-html="preview" ng-hide="true">-->
+    <div>
+        <button class="blackButton" style="width:200px; margin-left:10px;" ng-click="ratingPreview()">
+            {{labels.ratingPreview[lang]}}</button>
+    </div>
+    </div>
+    <pre>{{model | json}}</pre>
+    <pre>{{inputs | json}}</pre>
+</div>

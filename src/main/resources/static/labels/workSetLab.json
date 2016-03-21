@@ -1,0 +1,12 @@
+{
+	"taskQuestion": ["Pay automatically from:", "Automatisch bezahlen ab:"],
+	"euro": ["Euro", "Euro"],
+	"save": ["Save", "Speichern"],
+	"calibQuestions": ["Calibration Questions:", "Kalibrierungsfragen:"],
+	"option": ["Answer", "Antwort"],
+	"remove": ["Remove", "Entfernen"],
+	"add": ["Add", "Hinzufügen"],
+	"addCQ": ["Create Question", "Frage erstellen"],
+	"removeCQ": ["Remove Question", "Frage entfernen"],
+	"saveCQ": ["Save Question", "Frage speichern"]
+}

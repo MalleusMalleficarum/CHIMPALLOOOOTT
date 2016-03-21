@@ -1,0 +1,71 @@
+{
+	"extraInputs": {
+		"about": {
+			"class": "simple",
+			"type": "text",
+			"value": "",
+			"isVisible": true,
+			"label": ["About:", "Über:"]
+		}
+	},
+	"autofills": [{
+		"filledField": "taskQuestion",
+		"fillingField": "about",
+		"prefixLabel": ["Find a photo joke about ", "Finde einen Fotowitz über "],
+		"suffixLabel": ["",""]
+	}, {
+		"filledField": "ratingTaskQuestion",
+		"fillingField": "about",
+		"prefixLabel": ["Is this photo joke about ", "Ist dieser Fotowitz über "],
+		"suffixLabel": [" good?", " gut?"]
+	}, {
+		"filledField": "taskDescription",
+		"fillingField": "about",
+		"prefixLabel": ["Find a photo joke about ", "Finde einen Fotowitz über "],
+		"suffixLabel": ["",""]
+	}, {
+		"filledField": "taskTitle",
+		"fillingField": "about",
+		"prefixLabel": ["Photo joke about ", "Fotowitz über "],
+		"suffixLabel": ["",""]
+	}],
+	"prefills": {
+		"maxCreativeTask": 10,
+		"maxRatingTask": 100,
+		"budget": 300,
+		"sendCreativeToMTurk": true,
+		"sendCreativeToPyBossa": true,
+		"sendRatingToMTurk": true,
+		"sendRatingToPyBossa": true,
+		"basicPaymentMTurk": 5,
+		"basicPaymentPyBossa": 5,
+		"paymentPerTaskCrMTurk": 10,
+		"paymentPerTaskRaMTurk": 5,
+		"paymentPerTaskCrPyBossa": 20,
+		"paymentPerTaskRaPyBossa": 10,
+		"evaluationType": "edu.kit.ipd.creativecrowd.view.GenericRatingView",
+		"experimentType": "Bild"
+	},
+	"invisible": [
+		"maxCreativeTask",
+		"maxRatingTask",
+		"budget",
+		"sendCreativeToMTurk",
+		"sendCreativeToPyBossa",
+		"sendRatingToMTurk",
+		"sendRatingToPyBossa",
+		"basicPaymentMTurk",
+		"basicPaymentPyBossa",
+		"paymentPerTaskCrMTurk",
+		"paymentPerTaskRaMTurk",
+		"paymentPerTaskCrPyBossa",
+		"paymentPerTaskRaPyBossa",
+		"evaluationType",
+		"pictureURL",
+		"taskSourceURL",
+		"totalTaskCountThreshold",
+		"averageRatingThreshold",
+		"experimentType"
+	],
+	"validations": []
+}

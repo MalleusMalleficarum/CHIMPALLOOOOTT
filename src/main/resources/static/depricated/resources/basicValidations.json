@@ -1,0 +1,70 @@
+[
+	{
+		"expression":{
+			"type":"notEmpty",
+			"input":"taskQuestion"
+		},
+		"messageLabel":["Task Question must not be empty!",""]
+	},
+	{
+		"expression":{
+			"type":"notEmpty",
+			"input":"taskQuestion"
+		},
+		"messageLabel":["Rating Task Question must not be empty!",""]
+	},
+	{
+		"expression":{
+			"type":"notEmpty",
+			"input":"taskQuestion"
+		},
+		"messageLabel":["Task Description must not be empty!",""]
+	},
+	{
+		"expression":{
+			"type":"or",
+			"expL":{
+				"type":"and",
+				"expL":{
+					"type":"equalNull",
+					"input":"pictureURL"
+				},
+				"expR":{
+					"type":"notNull",
+					"input":"taskSourceURL"
+				}
+			},
+			"expR":{
+				"type":"and",
+				"expL":{
+					"type":"notNull",
+					"input":"pictureURL"
+				},
+				"expR":{
+					"type":"equalNull",
+					"input":"taskSourceURL"
+				}
+			}
+		},
+		"messageLabel":["Choose either Picture URL and Task Source URL or neither Picture URL nor Task Source URL!",""]
+	},
+	{
+		"expression":"or(and(equalNull(pictureURL),not(equalNull(taskSourceURL)),and(equalNull(taskSourceURL),not(equalNull(pictureURL))))",
+		"messageLabel":["Choose either Picture URL and Task Source URL or neither Picture URL nor Task Source URL!",""]
+	},
+	{
+		"type":["notNull"],
+		"messageLabel":[],
+		"inputs":[]
+	},
+	{
+		"type":["greaterZero"],
+		"messageLabel":[],
+		"inputs":[]
+	},
+	{
+		"type":"noneOrBoth",
+		"messageLabel":[],
+		"inputs":[]
+	}
+]

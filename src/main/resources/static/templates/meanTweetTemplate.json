@@ -1,0 +1,69 @@
+{
+	"extraInputs": {
+		"person": {
+			"class": "simple",
+			"type": "text",
+			"value": "",
+			"isVisible": true,
+			"label": ["Person:", "Person:"]
+		}
+	},
+	"autofills": [{
+		"filledField": "taskQuestion",
+		"fillingField": "person",
+		"prefixLabel": ["Find a mean tweet about ", "Finde einen gemeinen Tweet über "],
+		"suffixLabel": ["",""]
+	}, {
+		"filledField": "ratingTaskQuestion",
+		"fillingField": "person",
+		"prefixLabel": ["Is this mean tweet about ", "Ist dieser Mean Tweet über "],
+		"suffixLabel": [" good?", " gut?"]
+	}, {
+		"filledField": "taskDescription",
+		"fillingField": "person",
+		"prefixLabel": ["Find a mean tweet about ", "Finde einen gemeinen Tweet über "],
+		"suffixLabel": ["",""]
+	}, {
+		"filledField": "taskTitle",
+		"fillingField": "person",
+		"prefixLabel": ["Mean tweet about ", "Gemeiner Tweet über "],
+		"suffixLabel": ["",""]
+	}],
+	"prefills": {
+		"maxCreativeTask": 10,
+		"maxRatingTask": 100,
+		"budget": 300,
+		"sendCreativeToMTurk": true,
+		"sendCreativeToPyBossa": true,
+		"sendRatingToMTurk": true,
+		"sendRatingToPyBossa": true,
+		"basicPaymentMTurk": 5,
+		"basicPaymentPyBossa": 5,
+		"paymentPerTaskCrMTurk": 10,
+		"paymentPerTaskRaMTurk": 5,
+		"paymentPerTaskCrPyBossa": 20,
+		"paymentPerTaskRaPyBossa": 10,
+		"evaluationType": "edu.kit.ipd.creativecrowd.view.GenericRatingView"
+	},
+	"invisible": [
+		"maxCreativeTask",
+		"maxRatingTask",
+		"budget",
+		"sendCreativeToMTurk",
+		"sendCreativeToPyBossa",
+		"sendRatingToMTurk",
+		"sendRatingToPyBossa",
+		"basicPaymentMTurk",
+		"basicPaymentPyBossa",
+		"paymentPerTaskCrMTurk",
+		"paymentPerTaskRaMTurk",
+		"paymentPerTaskCrPyBossa",
+		"paymentPerTaskRaPyBossa",
+		"evaluationType",
+		"pictureURL",
+		"taskSourceURL",
+		"totalTaskCountThreshold",
+		"averageRatingThreshold"
+	],
+	"validations": []
+}

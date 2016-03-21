@@ -1,0 +1,36 @@
+{
+	"inputs":[
+	{"id":"taskQuestion", "type":"text", "value":"", "label":["Task Question:", "Fragestellung:"]},
+	{"id":"ratingTaskQuestion", "type":"text", "value":"", "label":["Rating Task Question:", "Fragestellung Bewertungsaufgabe:"]},
+	{"id":"taskDescription", "type":"text", "value":"", "label":["Task Description:", "Aufgabenbeschreibung:"]},	
+	{"id":"taskTitle", "type":"text", "value":"", "label":["Task Title:", "Aufgabentitel:"]},
+	{"id":"pictureURL", "type":"text", "value":"", "label":["Picture URL:", "Bild URL:"]},
+	{"id":"taskSourceURL", "type":"text", "value":"", "label":["Task Source URL:","Aufgabenquellen URL:"]},
+	{"id":"maxCreativeTask", "type":"number", "value":-1, "label":["Maximum Amount Of Submitted Creative Tasks:", "Maximale Anzahl Abgegebener Kreativaufgaben:"]},
+	{"id":"maxRatingTask", "type":"number", "value":-1, "label":["Maximum Amount Of Submitted Rating Tasks:", "Maximale Anzahl Abgegebener Bewertungsaufgaben:"]},
+	{"id":"budget", "type":"number", "value":-1, "label":["Budget:", "Etat:"]},
+	{"id":"basicPaymentMTurk", "type":"number", "value":-1, "label":["Basic Payment MTurk", "Grundbezahlung MTurk:"]},
+	{"id":"basicPaymentPyBossa", "type":"number", "value":-1, "label":["Basic Payment Pybossa:","Grundbezahlung Pybossa:"]},
+	{"id":"paymentPerTaskCrMTurk", "type":"number", "value":-1, "label":["Payment Per Creative Task MTurk:", "Bezahlung Pro Kreativaufgabe MTurk:"]},
+	{"id":"paymentPerTaskRaMTurk", "type":"number", "value":-1, "label":["Payment Per Rating Task MTurk:", "Bezahlung Pro Bewertungsaufgabe MTurk:"]},
+	{"id":"paymentPerTaskCrPyBossa", "type":"number", "value":-1, "label":["Payment Per Creative Task Pybossa:", "Bezahlung pro Kreativaufgabe Pybossa:"]},
+	{"id":"paymentPerTaskRaPyBossa", "type":"number", "value":-1, "label":["Payment Per Rating Task Pybossa:", "Bezahlung pro Bewertungsaufgabe Pybossa:"]},
+	{"id":"totalTaskCountThreshold", "type":"number", "value":-1, "label":["Total Task Count Threshold:", "Schwelle der Gesamtaufgabenanzahl:"]},
+	{"id":"averageRatingThreshold", "type":"number", "value":-1, "label":["Average Rating Threshold:", "Schwelle der Durchschnittsbertungen:"]}
+	{"id":"sendCreativeToMTurk", "type":"checkbox", "value":false, "label":["Send Creative Tasks to MTurk", "Sende Kreativaufgaben zu MTurk"]},
+	{"id":"sendCreativeToPyBossa", "type":"checkbox", "value":false, "label":["Send Creative Tasks to Pybossa", "Sende Kreativaufgaben zu Pybossa"]},
+	{"id":"sendRatingToMTurk", "type":"checkbox", "value":false, "label":["Send Rating Tasks to MTurk", "Sende Bewertungsaufgaben zu MTurk"]},
+	{"id":"sendRatingToPyBossa", "type":"checkbox", "value":false, "label":["Send Rating Tasks to Pybossa", "Sende Bewertungsaufgaben zu Pybossa"]}
+	],
+	"listInputs":[
+	{"id":"taskTags", "type":"text", "values":[], "label":["Tags:", "Schlagworte:"]},
+	{"id":"calibQuestions", "type":"text", "values":[], "label":["Calibration Questions:", "Kalibrierungsfragen:"]},
+	{"id":"controlQuestions", "type":"text", "values":[], "label":["Control Questions:", "Kontrollfragen:"]},
+	{"id":"qualificationsMTurk", "type":"text", "values":[], "label":["Needed MTurk Qualifications:", "Erforderliche MTurk-Qualifikationen:"]},
+	{"id":"qualificationsPyBossa", "type":"text", "values":[], "label":["Needed Pybossa Qualifications:", "Erforderliche Pybossa-Qualifikationen:"]},
+	{"id":"ratingOptions", "type":"text", "values":[], "label":["Rating Options:", "Bewertungsoptionen:"]},
+	],
+	"selectInputs":[
+	{"id":"evalTypes", "type":"text", "value":"", "options":[], "label":["Evaluation Types:","Auswertungsart:"]},
+	]
+}

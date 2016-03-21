@@ -1,0 +1,6 @@
+{
+	"url" : "/worker/:platform",
+	"name" : "Max Power",
+	"email" : "maxpower@work.com",
+	"mturkworkerid" : "anonym/123"
+}

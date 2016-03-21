@@ -1,0 +1,24 @@
+{
+  "views":["Views:", "Betrachtungen:"],
+  "submissions":["Submissions:", "Abgaben:"],
+  "ratings":["Ratings:", "Betrachtungen:"],
+  "startAt":["Started At:", "Gestartet am:"],
+  "lastSubmission":["Last Submission:", "Letzte Abgabe: Vor"],
+  "lastSubSuffix":["days ago", "Tagen"],
+  "isActive":[
+    ["Active", "Ended"],
+    ["Aktiv", "Beendet"]
+  ],
+  "exportAsTxt":["Export As txt", "Exportieren als txt"],
+  "exportAsCsv":["Export As CSV", "Exportieren als CSV"],
+  "confExp":["Configure Experiment", "Experiment bearbeiten"],
+  "stopSub":["Stop Submission", "Beende Abgaben"],
+  "endExp":["End Experiment", "Beende Experiment"],
+  "delExp":["Delete Experiment", "Lösche Experiment"],
+  "search":["Search..","Suche.."],
+  "sortBy":["Sort By:", "Sortiere nach:"],
+  "sortOpt":[
+    ["Alphabetical", "Age"],
+    ["Alphabet", "Alter"]
+  ]
+}

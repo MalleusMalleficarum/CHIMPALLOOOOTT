@@ -1,0 +1,9 @@
+{
+  "searchW":["Search..", "Suche.."],
+  "blockW" :["Block Worker", "Blockiere Arbeiter"],  
+  "alphab" :["Alphabetical", "Alphabetisch"],
+  "sortB" :["Sort By:", "Sortiere nach:"],
+  "eMail" :["Email", "E-Mail"],
+  "cred":["Credit: ", "Guthaben: "],
+  "pay":["Pay Worker", "Bezahle Arbeiter"]
+}

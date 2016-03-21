@@ -1,0 +1,16 @@
+{
+	"url" : "worker/:experimentid/creativetask"
+	"id" : 32,
+	"description" : "Write a meantweet about David Bowie.",
+	"picture_source_url" : "www.habdichgerne.de/totschlag.jpg",
+	"picture_url" : "www.habdichgerne.de/totschlag.jpg",
+	"controlquests" : 
+		{
+		"Did you understand the task?" : 
+			{
+			"Yes" : true,
+			"No" : false
+			}
+		}
+	"avaliable" : true
+}

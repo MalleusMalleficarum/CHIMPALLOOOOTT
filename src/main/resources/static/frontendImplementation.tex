@@ -1,0 +1,63 @@
+\title{Implementierungsdokument Frontend}
+
+\chapter{Einleitung}
+
+Aufgrund der Umsetzung als AngularJS OnePage-Application, besteht das Frontend aus Javascript(js)-, Html-, Json-, Css- und Ressourcendateien. Bei unserer Implementierung haben wir versucht uns streng an das MVC-Entwurfsmuster zu halten und möglichst viele statische Ressourcen auszulagern um diese leicht ändern zu können, bzw diese dynamisch vom Backend beziehen zu können. Wir haben die Dateien gemäß ihrer Funktionalität in verschiedene Verzeichnisse verteilt, auf die in den folgenden Kapiteln näher eingegangen wird. Um zusammengehörige Dateien verschiedener Verzeichnisse sofort erkennen zu können haben wir eine Nomenklatur eingeführt. Zusammengehörige Dateien heißen gleich, haben jedoch ein dem Verzeichnis entsprechendes Suffix. Beim Bootstrap der Applikation wird wie in Websiten üblich zuerst die index.html geladen, deren Position die Wurzel aus Sicht der
+Applikation darstellt. Von der index.html aus werden alle Scripte (also Controller und Services),
+insbesondere also auch das app.js-Script geladen, dass für das Routing verantwortlich ist.
+Die verschiedenen Views werden über die Angular-Direktive ng-view eingebunden. 
+
+\chapter{Controllers}
+
+Suffix: Ctrl
+Dateityp: js
+
+\chapter{Views}
+
+Suffix: View
+Dateityp: html
+
+Gewechselt werden zwischen den Views kann durch das Aufrufen eines Links relativ zur Position der index.html, für den nächsten eingestellten View und das Einstellen des entsprechenden Controllers, sorgt dann das app.js-Script mittels der Angular-Direktive ng-route. 
+
+\chapter{Models}
+
+Suffix: Model
+Dateityp: json
+
+Das Model wird von den Controllern wie in Prototypen-basierten Sprachen üblich aus statischen json-Dateien, die entweder dynamisch vom Backend erzeugt oder statisch im Model-Package vorliegen, mittels http in den View geladen.
+
+\chapter{Labels}
+
+Suffix: Lab
+Dateityp: json
+
+Um Multi-Language-Support und leichte Erweiterbarkeit zu erreichen, sind die Labels in
+json-Dateien ausgelagert, die mittels http vom Controller in den View geladen werden.
+
+\chapter{Inputs}
+
+Suffix: In
+Dateityp: json
+
+Um die Inputs dynamisch anpassen zu können, ist die Struktur der Inputs in Json-Dateien ausgelagert. Die Struktur kann im View ausgelesen werden und es kann dort dafür gesorgt werden, dass entsprechende Inputs zur Verfügung gestellt werden. Inputs-jsons sind gemäß folgender Synthax geschrieben:
+
+<INPUT_ID>:{"class":<CLASS>, "type":<TYPE>, "value":<VALUE>, "isCore":<IS_CORE>, "label":[<LANG_0, LANG_1,...>]}
+
+Legende
+<INPUT_ID>:= String, id des Inputs
+<CLASS>:= String, Klasse des Inputs, entweder simple (einfacher Input), list (Liste von Daten) oder select (Auswahlmenü)
+<TYPE>:= String, Typ des Inputs, entweder number, boolean oder text
+<VALUE>:= Initialwert des Inputs
+<IS_CORE>:= Boolean, legt fest ob Input zum Kern gehört, also eine direkte Entsprechung in dem Model hat
+<LANG_0, LANG_1,...>:= String-Liste, enthält die für die Beschriftungen der Inputs notwendigen Labels in den verschiedenen unterstützen Sprachen.
+
+\chapter{Styles}
+
+Suffix: Styles
+Dateityp: css
+
+\chapter{Services}
+
+Suffix: Service
+Dateityp: js
+

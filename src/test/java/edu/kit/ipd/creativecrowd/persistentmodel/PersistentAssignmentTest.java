@@ -4,8 +4,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 
-import edu.kit.ipd.creativecrowd.mturk.AssignmentId;
-import edu.kit.ipd.creativecrowd.mturk.WorkerId;
+import edu.kit.ipd.creativecrowd.crowdplatform.AssignmentId;
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableTaskConstellation;
 import edu.kit.ipd.creativecrowd.readablemodel.PaymentOutcome;
 
@@ -44,7 +44,7 @@ public class PersistentAssignmentTest extends PersistentAssignmentBefore {
 	@Test
 	public void mTurkWorkerIDTest() {
 		try {
-			WorkerId workerId = new WorkerId("123MW567");
+			WorkerId workerId = new edu.kit.ipd.creativecrowd.crowdplatform.WorkerId("123MW567");
 			testAss.setWorker(workerId);
 			assertTrue(testAss.getWorkerID().getId().contentEquals("123MW567"));
 		} catch (DatabaseException e) {

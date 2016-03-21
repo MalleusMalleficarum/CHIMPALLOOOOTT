@@ -8,15 +8,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.kit.ipd.creativecrowd.crowdplatform.AssignmentId;
+import edu.kit.ipd.creativecrowd.crowdplatform.PlatformIdentity;
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRating;
-import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingOption;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingTask;
 import edu.kit.ipd.creativecrowd.operations.MockExperiment;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 import edu.kit.ipd.creativecrowd.readablemodel.PaymentOutcome;
+import edu.kit.ipd.creativecrowd.readablemodel.RatingOption;
 
 public class DefaultAPOCTest {
 	MockExperiment mock;
@@ -33,7 +36,10 @@ public class DefaultAPOCTest {
 		def = new DefaultAPOC();
 		def.setParams(new HashMap<String, String>());
 		a = experiment.addAssignment();
+		//Logger.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + a.getID());
+		a.setAssignmentID(new AssignmentId(PlatformIdentity.MTurk.getPrefix() + "123"));
 		a.getTaskConstellation().addCreativeTask(experiment.getCreativeTask());
+		a.setWorker(new WorkerId("mturkid"));
 		answer = a.getTaskConstellation().answerCreativeTaskAt(0);
 		answer = a.getTaskConstellation().answerCreativeTaskAt(0);
 		a.setSubmitted();
@@ -41,12 +47,12 @@ public class DefaultAPOCTest {
 		MutableRatingTask rt = experiment.addRatingTask();
 		a.getTaskConstellation().addRatingTask(rt);
 		rt.addAnswerToBeRated(answer);
-		for(MutableRatingOption ro: experiment.getRatingOptions()) {
+		for(RatingOption ro: experiment.getRatingOptions()) {
+			a.setWorker(new WorkerId("someworker"));
 			MutableRating r = a.getTaskConstellation().addRatingToRatingTaskAt(1);
 			r.setRatingOption(ro);
 			r.setFinalQualityIndex(1);
 		}
-
 	}
 
 	@After

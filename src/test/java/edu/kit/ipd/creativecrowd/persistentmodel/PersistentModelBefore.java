@@ -7,8 +7,10 @@ import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 
+import edu.kit.ipd.chimpalot.jsonclasses.ConfigModelJson;
+import edu.kit.ipd.chimpalot.util.GlobalApplicationConfig;
+import edu.kit.ipd.chimpalot.util.Logger;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
-import edu.kit.ipd.creativecrowd.util.GlobalApplicationConfig;
 
 public class PersistentModelBefore {
 	static PersistentExperimentRepo testRep;
@@ -20,10 +22,12 @@ public class PersistentModelBefore {
 	public void setUpDatabaseConnectionTest() {
 		File file = new File("CreativeCrowd.db");
 		file.delete();
+		Logger.debug("Kill: Database");
 		try {
-			GlobalApplicationConfig.configureFromServletContext(null);
+			GlobalApplicationConfig.configure(true);
 			testRep = new PersistentExperimentRepo();
-			testExp = testRep.createExperiment("testExp");
+			ConfigModelJson j = new ConfigModelJson();
+			testExp = testRep.createExperiment("testExp", j);
 		} catch (DatabaseException e) {
 			fail(e.getClass().getName() + ": " + e.getMessage());
 		}

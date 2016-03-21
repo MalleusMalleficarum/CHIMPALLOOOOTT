@@ -33,12 +33,12 @@ import edu.kit.ipd.creativecrowd.operations.SubmitAssignmentTransaction;
 import edu.kit.ipd.creativecrowd.operations.UpdateTaskConstellationTransaction;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 import edu.kit.ipd.creativecrowd.persistentmodel.PersistentExperimentRepo;
+import edu.kit.ipd.chimpalot.util.GlobalApplicationConfig;
+import edu.kit.ipd.chimpalot.util.Logger;
 import edu.kit.ipd.creativecrowd.controller.ExperimentSpecFromConfig;
 import edu.kit.ipd.creativecrowd.readablemodel.Assignment;
 import edu.kit.ipd.creativecrowd.readablemodel.Button;
 import edu.kit.ipd.creativecrowd.readablemodel.ExperimentSpec;
-import edu.kit.ipd.creativecrowd.util.GlobalApplicationConfig;
-import edu.kit.ipd.creativecrowd.util.Logger;
 import mockit.Mock;
 import mockit.MockUp;
 

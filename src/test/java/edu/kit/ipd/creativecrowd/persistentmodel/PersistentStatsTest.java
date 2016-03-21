@@ -6,6 +6,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.kit.ipd.chimpalot.jsonclasses.ConfigModelJson;
+import edu.kit.ipd.chimpalot.util.Logger;
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableCreativeTask;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingTask;
@@ -80,11 +84,16 @@ public class PersistentStatsTest extends PersistentModelBefore {
 	/**
 	 * Diese Methode testet die Berechnung und das Holen der Anzahl der Bewertungen.
 	 */
+	//TODO this
 	@Test
 	public void getRatingCountTest() {
 		try {
-			MutableTaskConstellation tc1 = testExp.addAssignment().getTaskConstellation();
-			MutableTaskConstellation tc2 = testExp.addAssignment().getTaskConstellation();
+			MutableAssignment m1 = testExp.addAssignment();
+			m1.setWorker(new WorkerId("hallo"));
+			MutableTaskConstellation tc1 = m1.getTaskConstellation();
+			MutableAssignment m2 = testExp.addAssignment();
+			m2.setWorker(new WorkerId("wellt"));
+			MutableTaskConstellation tc2 = m2.getTaskConstellation();
 			MutableCreativeTask ct = testExp.addCreativeTask();
 			MutableRatingTask rt1 = testExp.addRatingTask();
 			MutableRatingTask rt2 = testExp.addRatingTask();
@@ -126,14 +135,17 @@ public class PersistentStatsTest extends PersistentModelBefore {
 	 * Erzeugung zweier Experimente und Vergleich deren Timestamps.
 	 * Der Test wirft bei Ungleichheit oder bei einer Exception einen Fehler.
 	 */
+	//THIS
 	@Test
 	public void getTimestampTest() {
 		try {
-			MutableExperiment testExp1 = testRep.createExperiment("1");
-			MutableExperiment testExp2 = testRep.createExperiment("2");
-			
+			ConfigModelJson x = new ConfigModelJson();
+			MutableExperiment testExp1 = testRep.createExperiment("1", x);
+			MutableExperiment testExp2 = testRep.createExperiment("2", x);
+			String t = testExp1.getStats().getTimestampBegin();
+			Logger.debug(testExp2.getStats().getTimestampBegin());
 
-			assertTrue(testExp1.getStats().getTimestampBegin().equals(testExp2.getStats().getTimestampBegin()));
+			assertTrue(testExp1.getStats().getTimestampBegin().equals(t));
 			
 			testRep.deleteExperiment("1");
 			testRep.deleteExperiment("2");

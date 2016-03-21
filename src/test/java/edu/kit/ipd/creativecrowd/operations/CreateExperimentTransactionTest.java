@@ -2,10 +2,9 @@ package edu.kit.ipd.creativecrowd.operations;
 
 import static org.junit.Assert.*;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import mockit.Mock;
 import mockit.MockUp;
@@ -14,18 +13,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.kit.ipd.chimpalot.jsonclasses.ConfigModelJson;
+import edu.kit.ipd.chimpalot.jsonclasses.RatingOptionJson;
+import edu.kit.ipd.chimpalot.util.GlobalApplicationConfig;
 import edu.kit.ipd.creativecrowd.connector.ModelException;
-import edu.kit.ipd.creativecrowd.controller.ExperimentSpecFromConfig;
-import edu.kit.ipd.creativecrowd.mturk.ConnectionFailedException;
-import edu.kit.ipd.creativecrowd.mturk.HITSpec;
-import edu.kit.ipd.creativecrowd.mturk.IllegalInputException;
+import edu.kit.ipd.creativecrowd.crowdplatform.ConnectionFailedException;
+import edu.kit.ipd.creativecrowd.crowdplatform.HITSpec;
+import edu.kit.ipd.creativecrowd.crowdplatform.IllegalInputException;
 import edu.kit.ipd.creativecrowd.mutablemodel.ExperimentRepo;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 import edu.kit.ipd.creativecrowd.persistentmodel.PersistentExperimentRepo;
-import edu.kit.ipd.creativecrowd.readablemodel.ExperimentSpec;
-import edu.kit.ipd.creativecrowd.util.GlobalApplicationConfig;
-import edu.kit.ipd.creativecrowd.mturk.MTurkConnection;
+import edu.kit.ipd.creativecrowd.readablemodel.ConfigModelMock;
+import edu.kit.ipd.creativecrowd.transformer.Transformer;
 /**
  * 
  * @author Anika
@@ -34,25 +34,45 @@ import edu.kit.ipd.creativecrowd.mturk.MTurkConnection;
 public class CreateExperimentTransactionTest {
 	CreateExperimentTransaction creaty;
 	ExperimentRepo repo;
-	ExperimentSpec spec;
 	MutableExperiment exp;
-	MockUp mocki;
+	ConfigModelJson config;
+	MockUp<Transformer> mocki;
 
 
 	
 	@Before
-	public void setUp() throws DatabaseException {
-		GlobalApplicationConfig.configureFromServletContext(null);
-		Map<String, Double>  ratingOps = new HashMap<String, Double>();
-		ratingOps.put("Pizza", 1.0);
-		ratingOps.put("Kuchen", 2.0);
-		ratingOps.put("Torte", 3.0);
-		Map<String, String> strategyParams = new HashMap<String, String>();
-		List<String> qualifications = new LinkedList<String>();
-		List<String> tags = new LinkedList<String>();
+	public void setUp() throws Exception {
+		GlobalApplicationConfig.configure(true);
 		creaty = new CreateExperimentTransaction();
-		spec = new ExperimentSpecFromConfig(500, 1, 5, 5, 5, "Do a backflip", "nmvvnh","so", "test", "exp", "mturk", "test", ratingOps, strategyParams, qualifications, tags, "test", "lol", 2, 3);
 		repo = new PersistentExperimentRepo();
+		config = ConfigModelMock.validConfig();
+		config.setMaxRatingTask(1);
+		config.setMaxCreativeTask(2);
+		config.setBasicPaymentMTurk(1);
+		config.setBasicPaymentPyBossa(1);
+		config.setPaymentPerTaskCrMTurk(1);
+		config.setPaymentPerTaskCrPyBossa(1);
+		config.setPaymentPerTaskRaMTurk(1);
+		config.setPaymentPerTaskRaPyBossa(1);
+		config.setBudget(500);
+		config.setTaskTitle("LOL");
+		config.setTaskDescription("lol");
+		List<RatingOptionJson> ratingoptions = new ArrayList<RatingOptionJson>();
+		RatingOptionJson rating1 = new RatingOptionJson();
+		RatingOptionJson rating2 = new RatingOptionJson();
+		RatingOptionJson rating3 = new RatingOptionJson();
+		rating1.setText("Pizza");
+		rating2.setText("Kuchen");
+		rating3.setText("Torte");
+		rating1.setValue(1);
+		rating2.setValue(2);
+		rating3.setValue(3);
+		ratingoptions.add(rating1);
+		ratingoptions.add(rating2);
+		ratingoptions.add(rating3);
+		config.setRatingOptionsJson(ratingoptions);
+		config.setQualificationsMTurk(new LinkedList<String>());
+		config.setStrategy(null);
 	}
 	/**
 	 * führt die Methode run der CreateExperimentTransaction aus und 
@@ -67,7 +87,7 @@ public class CreateExperimentTransactionTest {
 	 */
 	@Test
 	public void runTest() throws ModelException, StrategyNotFoundException, ConnectionFailedException, DatabaseException, IllegalInputException {
-		mocki = new MockUp<MTurkConnection>(){
+		mocki = new MockUp<Transformer>(){
 			@Mock
 			String publishHIT(HITSpec spec){
 				return "ID";
@@ -77,7 +97,7 @@ public class CreateExperimentTransactionTest {
 				return true;
 			}
 		};
-			exp = creaty.run(repo, spec);
+			exp = creaty.run(repo, config, "exp");
 			assertTrue(exp.getID().equals("exp"));
 	}
 

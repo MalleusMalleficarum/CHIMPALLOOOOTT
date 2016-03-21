@@ -11,6 +11,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.kit.ipd.chimpalot.util.GlobalApplicationConfig;
+import edu.kit.ipd.creativecrowd.crowdplatform.AssignmentId;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableTaskConstellation;
@@ -18,7 +20,6 @@ import edu.kit.ipd.creativecrowd.operations.strategies.FreeformTaskConstellation
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 import edu.kit.ipd.creativecrowd.persistentmodel.PersistentExperimentRepo;
 import edu.kit.ipd.creativecrowd.readablemodel.Button;
-import edu.kit.ipd.creativecrowd.util.GlobalApplicationConfig;
 
 public class UpdateTaskConstellationTransactionTest {
 	MutableExperiment experiment;
@@ -27,19 +28,20 @@ public class UpdateTaskConstellationTransactionTest {
 	MockExperiment mock;
 	
 	@Before
-	public void setUp() throws DatabaseException {
-		GlobalApplicationConfig.configureFromServletContext(null);
+	public void setUp() throws Exception {
+		GlobalApplicationConfig.configure(true);
 		try {
 			mock = new MockExperiment();
 			repo = new PersistentExperimentRepo();
-			experiment = mock.getExperiment();
+			experiment = mock.getExperiment();			
 			as = experiment.addAssignment();
+			as.setAssignmentID(new AssignmentId("MT123"));
 		} catch (DatabaseException e) {
 			fail("There´s a problem with the database");
 		}
 		HashMap<String,String> params = new HashMap<String,String>();
 		params.put("tcm_class", "edu.kit.ipd.creativecrowd.operations.strategies.FreeformTaskConstellationMutator");
-		experiment.setStrategyParams(params);
+		MockExperiment.setStrategyparams(experiment, params);
 	}
 	/**
 	 *Die Methode test() ruft die UpdateTaskConstellation Methode auf und überprüft,

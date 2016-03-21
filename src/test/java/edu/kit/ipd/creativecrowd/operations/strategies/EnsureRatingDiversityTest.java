@@ -8,21 +8,21 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRating;
-import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingOption;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingTask;
 import edu.kit.ipd.creativecrowd.operations.MockExperiment;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
+import edu.kit.ipd.creativecrowd.readablemodel.RatingOption;
 
 public class EnsureRatingDiversityTest {
 	MockExperiment mock;
 	MutableExperiment experiment;
 	EnsureRatingDiversity erd;
 	MutableRating r;
-	MutableRatingOption mro;
+	RatingOption mro;
 
 	@Before
 	public void setUp() throws Exception {
@@ -33,10 +33,11 @@ public class EnsureRatingDiversityTest {
 		MutableAssignment as = experiment.addAssignment();
 		MutableRatingTask rt = experiment.addRatingTask();
 		as.getTaskConstellation().addRatingTask(rt);
-		for(MutableRatingOption ro: experiment.getRatingOptions()) {
+		for(RatingOption ro: experiment.getRatingOptions()) {
 			mro = ro;
 			break;
 		}
+		as.setWorker(new WorkerId("mturkid"));
 		MutableRating ra = as.getTaskConstellation().addRatingToRatingTaskAt(0);
 		ra.setRatingOption(mro);
 		r = as.getTaskConstellation().addRatingToRatingTaskAt(0);

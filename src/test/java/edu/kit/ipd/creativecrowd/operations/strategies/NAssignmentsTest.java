@@ -3,17 +3,14 @@ package edu.kit.ipd.creativecrowd.operations.strategies;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.kit.ipd.creativecrowd.mutablemodel.ExperimentRepo;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.operations.MockExperiment;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
-import edu.kit.ipd.creativecrowd.persistentmodel.PersistentExperimentRepo;
 
 public class NAssignmentsTest {
 	MutableExperiment exp;
@@ -21,13 +18,14 @@ public class NAssignmentsTest {
 	MockExperiment mock;
 
 	@Before
-	public void setUp() throws DatabaseException {
+	public void setUp() throws Exception {
 		mock = new MockExperiment();
 		MutableExperiment exp = mock.getExperiment();
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("tacc.n", "10");
 		n = new NAssignments();
-		exp.setStrategyParams(params);
+
+		MockExperiment.setStrategyparams(exp, params);
 		n.setParams(params);
 	}
 

@@ -13,12 +13,19 @@ public class PersistentCreativeTaskTest extends PersistentAssignmentBefore {
 
 	private MutableCreativeTask testCreativeTask;
 
+	
+	
+	
+
 	/**
 	 * gettet den creativeTask von der testTC
 	 */
 	@Before
 	public void setUpCreativeTask() {
 		try {
+			PersistentCalibrationQuestionRepo rep = new PersistentCalibrationQuestionRepo();
+			rep.deleteCalibrationQuestion(rep.createCalibrationQuestion("id").getID());
+			new PersistentConfigModelRepo();
 			testCreativeTask = (MutableCreativeTask) testTC.getCurrentTask();
 		} catch (DatabaseException e) {
 			fail(e.getClass().getName() + ": " + e.getMessage());
@@ -66,7 +73,7 @@ public class PersistentCreativeTaskTest extends PersistentAssignmentBefore {
 			testTC.answerCreativeTaskAt(0);
 			testTC.answerCreativeTaskAt(0);
 			int i = 0;
-			for(MutableAnswer ans : testAnswer.getCreativeTask().getAnswers()) {
+			for(@SuppressWarnings("unused") MutableAnswer ans : testAnswer.getCreativeTask().getAnswers()) {
 				i++;
 			}
 			assertTrue(i == 6);

@@ -3,8 +3,6 @@ package edu.kit.ipd.creativecrowd.database;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;

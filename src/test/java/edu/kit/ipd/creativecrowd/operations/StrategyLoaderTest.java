@@ -5,22 +5,21 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class StrategyLoaderTest {
 	Map<String, String> params;
-	StrategyLoader loader;
+	StrategyLoader<AssignmentPaymentOutcomeCalculator> loader;
 
 	@Before
 	public void setUp() throws Exception {
-		params = new HashMap();
+		params = new HashMap<String, String>();
 		params.put("apoc_class",
 				"edu.kit.ipd.creativecrowd.operations.strategies.BonusAPOC");
 		params.put("test", "test");
-		loader = new StrategyLoader(params);
+		loader = new StrategyLoader<AssignmentPaymentOutcomeCalculator>(params);
 	}
 
 	@After

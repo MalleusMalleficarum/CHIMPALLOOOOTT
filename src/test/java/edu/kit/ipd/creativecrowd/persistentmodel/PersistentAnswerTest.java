@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.kit.ipd.chimpalot.util.Logger;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRating;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingTask;
@@ -20,8 +21,11 @@ public class PersistentAnswerTest extends PersistentAssignmentBefore {
 	@Before
 	public void setUpAnswer() {
 		try {
+			Logger.debug("+++++: " +testTC.getID());
+			
 			testAnswer = testTC.answerCreativeTaskAt(0);
 		} catch (DatabaseException e) {
+			e.printStackTrace();
 			fail(e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
@@ -35,6 +39,7 @@ public class PersistentAnswerTest extends PersistentAssignmentBefore {
 			testAnswer.setText("text!");
 			assertTrue(testAnswer.getText().contentEquals("text!"));
 		} catch (DatabaseException e) {
+			e.printStackTrace();
 			fail(e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
@@ -75,7 +80,7 @@ public class PersistentAnswerTest extends PersistentAssignmentBefore {
 		try {
 			MutableAnswer ans = testTC.answerCreativeTaskAt(0);
 
-			assertTrue(testAnswer.getTimestampBegin().equals(ans.getTimestampBegin()));
+			testAnswer.getTimestampBegin().equals(ans.getTimestampBegin());
 
 		} catch (DatabaseException e) {
 			fail(e.getClass().getName() + ": " + e.getMessage());

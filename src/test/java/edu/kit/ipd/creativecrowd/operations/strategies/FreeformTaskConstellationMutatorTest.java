@@ -8,7 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.operations.MockExperiment;
@@ -60,7 +60,8 @@ public class FreeformTaskConstellationMutatorTest {
 	public void testSecondGeneration() throws NoValidTasksException, DatabaseException {
 		MutableAssignment as = experiment.addAssignment();
 		as.getTaskConstellation().addCreativeTask(experiment.getCreativeTask());
-		MutableAnswer answer = as.getTaskConstellation().answerCreativeTaskAt(0);
+		as.setWorker(new WorkerId("mturkid"));
+		as.getTaskConstellation().answerCreativeTaskAt(0);
 		as.setSubmitted();
 		MutableAssignment a = experiment.addAssignment();
 		a.getTaskConstellation().addCreativeTask(experiment.getCreativeTask());
@@ -74,7 +75,7 @@ public class FreeformTaskConstellationMutatorTest {
 	//TODO mehr Tests für andere Operationen als initiales Erstellen, sobald wir die anderen Vorgänge implementieren
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		try {
 			mock = new MockExperiment();
 			experiment = mock.getExperiment();

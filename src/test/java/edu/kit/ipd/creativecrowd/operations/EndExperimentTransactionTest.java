@@ -1,6 +1,9 @@
 package edu.kit.ipd.creativecrowd.operations;
 
 import static org.junit.Assert.*;
+
+import java.util.HashMap;
+
 import mockit.Mock;
 import mockit.MockUp;
 
@@ -8,18 +11,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.kit.ipd.creativecrowd.mturk.AssignmentId;
-import edu.kit.ipd.creativecrowd.mturk.ConnectionFailedException;
-import edu.kit.ipd.creativecrowd.mturk.IllegalInputException;
-import edu.kit.ipd.creativecrowd.mturk.MTurkConnection;
-import edu.kit.ipd.creativecrowd.mutablemodel.ExperimentRepo;
+import edu.kit.ipd.creativecrowd.crowdplatform.AssignmentId;
+import edu.kit.ipd.creativecrowd.crowdplatform.ConnectionFailedException;
+import edu.kit.ipd.creativecrowd.crowdplatform.IllegalInputException;
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
-import edu.kit.ipd.creativecrowd.mutablemodel.MutableCreativeTask;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingTask;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
-import edu.kit.ipd.creativecrowd.readablemodel.ExperimentSpec;
+import edu.kit.ipd.creativecrowd.transformer.Transformer;
 
 public class EndExperimentTransactionTest {
 	MutableExperiment exp;
@@ -29,8 +30,25 @@ public class EndExperimentTransactionTest {
 	@Before
 	public void setUp() throws Exception {
 		mock = new MockExperiment();
-		mock.setStrategyparams();
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("apoc_class",
+				"edu.kit.ipd.creativecrowd.operations.strategies.DefaultAPOC");
+		params.put("aqic_class",
+				"edu.kit.ipd.creativecrowd.operations.strategies.AverageRating");
+		params.put("ftg_class",
+				"edu.kit.ipd.creativecrowd.operations.strategies.FeedbackWithoutRatingText");
+		params.put("rqic_class",
+				"edu.kit.ipd.creativecrowd.operations.strategies.EnsureRatingDiversity");
+		params.put("rsd_class",
+				"edu.kit.ipd.creativecrowd.operations.strategies.FixedRatingsPerAnswerDecider");
+		params.put("tacc_class",
+				"edu.kit.ipd.creativecrowd.operations.strategies.NAssignments");
+		params.put(
+				"tcm_class",
+				"edu.kit.ipd.creativecrowd.operations.strategies.FreeformTaskConstellationMutator");
+		
 		exp = mock.getExperiment();	
+		MockExperiment.setStrategyparams(exp, params);
 		end = new EndExperimentTransaction();
 	}
 
@@ -38,7 +56,7 @@ public class EndExperimentTransactionTest {
 	public void tearDown() throws Exception {
 		mock.deleteExperiment();
 		mock = null;
-		exp =null;
+		exp = null;
 		end = null;
 	}
 	/**
@@ -50,9 +68,12 @@ public class EndExperimentTransactionTest {
 	@Test
 	public void test() throws DatabaseException {
 		MutableAssignment a = exp.addAssignment();
+		a.setAssignmentID(new AssignmentId("MT123"));
+		a.setWorker(new WorkerId("iamnotarobot"));
 		a.getTaskConstellation().addCreativeTask(exp.getCreativeTask());
 		MutableAnswer an = a.getTaskConstellation().answerCreativeTaskAt(0);
 		MutableAssignment as = exp.addAssignment();
+		as.setAssignmentID(new AssignmentId("MT124"));
 		MutableRatingTask rt = exp.addRatingTask();
 		rt.addAnswerToBeRated(an);
 		as.getTaskConstellation().addRatingTask(rt);
@@ -60,13 +81,13 @@ public class EndExperimentTransactionTest {
 		as.getTaskConstellation().addRatingTask(rt);
 		
 		try {
-			new MockUp<MTurkConnection>(){
+			new MockUp<Transformer>(){
 				@Mock
 				void endHIT(String Hitid) throws DatabaseException{
 					
 				}
 				@Mock
-				void approveHIT(AssignmentId AssignmentId, String feedback) throws IllegalInputException {
+				void approveHIT(AssignmentId AssignmentId, WorkerId wrkid, String feedback) throws IllegalInputException {
 					System.out.println("HIT APPROVED");
 				}
 				@Mock
@@ -89,13 +110,13 @@ public class EndExperimentTransactionTest {
 	
 	@Test
 	public void testWithoutAWorker() throws ConnectionFailedException, DatabaseException, IllegalInputException {
-		new MockUp<MTurkConnection>(){
+		new MockUp<Transformer>(){
 			@Mock
 			void endHIT(String Hitid) throws DatabaseException{
 				
 			}
 			@Mock
-			void approveHIT(AssignmentId AssignmentId, String feedback) throws IllegalInputException {
+			void approveHIT(AssignmentId AssignmentId, WorkerId wrkid, String feedback) throws IllegalInputException {
 				
 			}
 			@Mock

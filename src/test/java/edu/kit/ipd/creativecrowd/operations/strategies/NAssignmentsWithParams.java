@@ -18,9 +18,9 @@ public class NAssignmentsWithParams {
 	MockExperiment mock;
 
 	@Before
-	public void setUpTestWithoutParams() throws DatabaseException {
+	public void setUpTestWithoutParams() throws Exception {
 		mock = new MockExperiment();
-		MutableExperiment exp = mock.getExperiment();
+		exp = mock.getExperiment();
 		n = new NAssignments();
 		n.setParams(new HashMap<String, String>());
 	}

@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRating;
-import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingOption;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingTask;
 
 public class PersistentRatingTest extends PersistentAssignmentBefore {
@@ -44,19 +43,19 @@ public class PersistentRatingTest extends PersistentAssignmentBefore {
 		}
 	}
 
-	/**
-	 * Diese Methode wählt eine Bewertungsoption einer Bewertung aus und holt sie aus der Datenbank.
-	 */
-	@Test
-	public void ratingOptionTest() {
-		try {
-			MutableRatingOption option = testExp.addRatingOption();
-			testRating.setRatingOption(option);
-			assertTrue(testRating.getSelectedRatingOption().equals(option));
-		} catch (DatabaseException e) {
-			fail(e.getClass().getName() + ": " + e.getMessage());
-		}
-	}
+//	/**
+//	 * Diese Methode wählt eine Bewertungsoption einer Bewertung aus und holt sie aus der Datenbank.
+//	 */
+//	@Test
+//	public void ratingOptionTest() {
+//		try {
+//			MutableRatingOption option = testExp.addRatingOption();
+//			testRating.setRatingOption(option);
+//			assertTrue(testRating.getSelectedRatingOption().equals(option));
+//		} catch (DatabaseException e) {
+//			fail(e.getClass().getName() + ": " + e.getMessage());
+//		}
+//	}
 
 	/**
 	 * Diese Methode testet die endgültige Bewertungshöhe der Bewertung (setzen und holen aus der Datenbank).

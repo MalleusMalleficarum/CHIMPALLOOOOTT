@@ -8,15 +8,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRating;
-import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingOption;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingTask;
 import edu.kit.ipd.creativecrowd.operations.MockExperiment;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
-import edu.kit.ipd.creativecrowd.readablemodel.RatingTask;
+import edu.kit.ipd.creativecrowd.readablemodel.RatingOption;
 
 public class FixedRatingsPerAnswerDeciderTest {
 	MockExperiment mock;
@@ -30,14 +30,16 @@ public class FixedRatingsPerAnswerDeciderTest {
 		exp = mock.getExperiment();
 		MutableAssignment a = exp.addAssignment();
 		a.getTaskConstellation().addCreativeTask(exp.getCreativeTask());
+		a.setWorker(new WorkerId("mturkid"));
 		answer = a.getTaskConstellation().answerCreativeTaskAt(0);
 		a.setSubmitted();
 		MutableAssignment as = exp.addAssignment();
 		MutableRatingTask rt = exp.addRatingTask();
 		as.getTaskConstellation().addRatingTask(rt);
 		rt.addAnswerToBeRated(answer);
+		as.setWorker(new WorkerId("someworker"));
 		MutableRating r = as.getTaskConstellation().addRatingToRatingTaskAt(0);
-		for(MutableRatingOption ro: exp.getRatingOptions()) {
+		for(RatingOption ro: exp.getRatingOptions()) {
 			r.setRatingOption(ro);
 			r.setFinalQualityIndex(1);
 			answer.addRating(r);

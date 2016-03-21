@@ -5,7 +5,7 @@ import com.amazonaws.mturk.requester.HIT;
 import com.amazonaws.mturk.service.axis.RequesterService;
 import com.amazonaws.mturk.util.ClientConfig;
 
-import edu.kit.ipd.creativecrowd.util.GlobalApplicationConfig;
+import edu.kit.ipd.chimpalot.util.GlobalApplicationConfig;
 
 /**
  * @author Tobias This class creates the connection to MTurk and simplifies the

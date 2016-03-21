@@ -1,7 +1,8 @@
 package edu.kit.ipd.creativecrowd.readablemodel;
 
-import edu.kit.ipd.creativecrowd.mturk.AssignmentId;
-import edu.kit.ipd.creativecrowd.mturk.WorkerId;
+import edu.kit.ipd.creativecrowd.crowdplatform.AssignmentId;
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableWorker;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 
 // TODO: Auto-generated Javadoc
@@ -74,4 +75,19 @@ public interface Assignment {
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
 	public Experiment getExperiment() throws DatabaseException;
+	
+	/**
+	 * Gets a timestamp of this assignments' submission. If it isn't submitted yet, it returns {@code null}
+	 * 
+	 * @return the timestamp
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public String getTimestampSubmission() throws DatabaseException;
+	
+	/**
+	 * gets the worker
+	 * @return worker
+	 * @throws DatabaseException
+	 */
+	public MutableWorker getWorker() throws DatabaseException;
 }

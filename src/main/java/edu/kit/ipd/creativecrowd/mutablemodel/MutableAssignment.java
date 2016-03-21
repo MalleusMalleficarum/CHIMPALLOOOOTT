@@ -1,6 +1,6 @@
 package edu.kit.ipd.creativecrowd.mutablemodel;
 
-import edu.kit.ipd.creativecrowd.mturk.*;
+import edu.kit.ipd.creativecrowd.crowdplatform.*;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 import edu.kit.ipd.creativecrowd.readablemodel.*;
 
@@ -56,4 +56,11 @@ public interface MutableAssignment extends Assignment {
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
 	public void setAssignmentID(AssignmentId id) throws DatabaseException;
+	
+	/**
+	 * gets the worker
+	 * @return worker
+	 * @throws DatabaseException
+	 */
+	public MutableWorker getWorker() throws DatabaseException;
 }

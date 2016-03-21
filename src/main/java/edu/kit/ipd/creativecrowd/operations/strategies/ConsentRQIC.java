@@ -1,14 +1,10 @@
 package edu.kit.ipd.creativecrowd.operations.strategies;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.function.IntPredicate;
 
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;

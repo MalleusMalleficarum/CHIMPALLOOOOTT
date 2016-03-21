@@ -9,7 +9,7 @@ import edu.kit.ipd.creativecrowd.database.Value;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRating;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingTask;
-import edu.kit.ipd.creativecrowd.readablemodel.Answer;
+import edu.kit.ipd.creativecrowd.readablemodel.CreativeTask;
 
 /**
  * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingTask
@@ -122,7 +122,7 @@ class PersistentRatingTask implements MutableRatingTask {
 					"SELECT id FROM findratingsfor WHERE ratingtaskid = {?};",
 					Value.fromString(this.id));
 			/*-{?}|Test Repo-Review|MainUser|c1|{?}*/
-			for (Iterable<Value> row : connection.query(sql)) {
+			for (@SuppressWarnings("unused") Iterable<Value> row : connection.query(sql)) {
 				ret++;
 			}
 		} catch (SQLException e) {
@@ -179,6 +179,30 @@ class PersistentRatingTask implements MutableRatingTask {
 			throw new DatabaseException(e.getMessage());
 		}
 		return ret;
+	}
+
+	@Override
+	public CreativeTask getCreativeTask() throws DatabaseException {
+		try {
+			String sql = connection.formatString("SELECT creativetask.id FROM ratingtask , creativetask WHERE creativetask.experimentid = ratingtask.experimentid AND ratingtask.id = {?}", Value.fromString(id));
+			return new PersistentCreativeTask(connection.query(sql).iterator()
+					.next().iterator().next().asString(), this.connection);
+			
+		}catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+	}
+
+	@Override
+	public String getDescription() throws DatabaseException {
+		try {
+			String sql = connection.formatString("SELECT description FROM ratingtask WHERE ratingtask.id = {?}", Value.fromString(id));
+			return connection.query(sql).iterator()
+					.next().iterator().next().asString();
+			
+		}catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
 	}
 
 }

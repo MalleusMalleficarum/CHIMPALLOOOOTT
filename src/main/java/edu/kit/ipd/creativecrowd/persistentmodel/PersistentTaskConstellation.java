@@ -5,9 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import edu.kit.ipd.chimpalot.util.Logger;
 import edu.kit.ipd.creativecrowd.database.DatabaseConnection;
 import edu.kit.ipd.creativecrowd.database.Value;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableCalibrationAnswer;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableCalibrationQuestion;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableControlAnswer;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableControlQuestion;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableCreativeTask;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRating;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingTask;
@@ -54,6 +59,14 @@ class PersistentTaskConstellation implements MutableTaskConstellation {
 			sql = connection.formatString("SELECT ratingtaskid FROM containsevaluative WHERE taskconstellationid = {?};", Value.fromString(this.id));
 			for (Iterable<Value> row : connection.query(sql)) {
 				ret.add(new PersistentRatingTask(row.iterator().next().asString(), connection));
+			}
+			sql = connection.formatString("SELECT controlquestionid FROM containscontrol WHERE taskconstellationid = {?};", Value.fromString(this.id));
+			for (Iterable<Value> row : connection.query(sql)) {
+				ret.add(new PersistentControlQuestion(connection, row.iterator().next().asString()));
+			}
+			sql = connection.formatString("SELECT calibrationquestionid FROM containscalibtask WHERE taskconstellationid = {?};", Value.fromString(this.id));
+			for (Iterable<Value> row : connection.query(sql)) {
+				ret.add(new PersistentCalibrationQuestion(row.iterator().next().asString(), connection));
 			}
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());
@@ -107,10 +120,11 @@ class PersistentTaskConstellation implements MutableTaskConstellation {
 	@Override
 	public Task getCurrentTask() throws DatabaseException {
 		String taskid = null;
-		Task ret;
+		Task ret = null;;
 		try {
 			int current;
 			String sql = connection
+					//get taskconst id
 					.formatString(
 							"SELECT current_pos FROM taskconstellation WHERE id = {?};",
 							Value.fromString(this.id));
@@ -126,7 +140,30 @@ class PersistentTaskConstellation implements MutableTaskConstellation {
 								"SELECT creativetaskid FROM containscreative WHERE task_position = {?} AND taskconstellationid = {?};",
 								Value.fromInt(current), Value.fromString(this.id));
 				if (!connection.query(sql).iterator().hasNext()) {
-					throw new DatabaseException("task with task_position " + current + " does not exist in task constellation " + this.toString());
+					
+					if (!connection.query(sql).iterator().hasNext()) {
+						sql = connection
+								.formatString(
+										"SELECT controlquestionid FROM containscontrol WHERE task_position = {?} AND taskconstellationid = {?};",
+										Value.fromInt(current), Value.fromString(this.id));
+						if (!connection.query(sql).iterator().hasNext()) {
+							sql = connection
+									.formatString(
+											"SELECT calibrationquestionid FROM containscalibtask WHERE task_position = {?} AND taskconstellationid = {?};",
+											Value.fromInt(current), Value.fromString(this.id));
+							if (!connection.query(sql).iterator().hasNext()) {
+								throw new DatabaseException("task with task_position " + current + " does not exist in task constellation " + this.toString());
+							}
+						}
+						else {
+							taskid = connection.query(sql).iterator().next().iterator().next().asString();
+							ret = new PersistentCalibrationQuestion(taskid, connection);
+						}
+					}
+					else{
+						taskid = connection.query(sql).iterator().next().iterator().next().asString();
+						ret = new PersistentControlQuestion(connection, taskid);
+					}
 				}
 				else {
 					taskid = connection.query(sql).iterator().next().iterator().next().asString();
@@ -142,6 +179,7 @@ class PersistentTaskConstellation implements MutableTaskConstellation {
 			throw new DatabaseException(e.getMessage());
 
 		}
+		
 		return ret;
 	}
 
@@ -293,11 +331,19 @@ class PersistentTaskConstellation implements MutableTaskConstellation {
 		int ret = 0;
 		try {
 			String sql = connection.formatString("SELECT id FROM containscreative WHERE taskconstellationid = {?}; ", Value.fromString(this.id));
-			for (Iterable<Value> row : connection.query(sql)) {
+			for (@SuppressWarnings("unused") Iterable<Value> row : connection.query(sql)) {
 				ret++;
 			}
 			sql = connection.formatString("SELECT id FROM containsevaluative WHERE taskconstellationid = {?}; ", Value.fromString(this.id));
-			for (Iterable<Value> row : connection.query(sql)) {
+			for (@SuppressWarnings("unused") Iterable<Value> row : connection.query(sql)) {
+				ret++;
+			}
+			sql = connection.formatString("SELECT id FROM containscontrol WHERE taskconstellationid = {?}; ", Value.fromString(this.id));
+			for (@SuppressWarnings("unused") Iterable<Value> row : connection.query(sql)) {
+				ret++;
+			}
+			sql = connection.formatString("SELECT id FROM containscalibtask WHERE taskconstellationid = {?}; ", Value.fromString(this.id));
+			for (@SuppressWarnings("unused") Iterable<Value> row : connection.query(sql)) {
 				ret++;
 			}
 		} catch (SQLException e) {
@@ -373,13 +419,16 @@ class PersistentTaskConstellation implements MutableTaskConstellation {
 			int i = 0;
 			for (Task t : getTasks()) {
 				if (i == index) {
-					// fetch the containscreativeid
+					List<Value> args = new ArrayList<Value>();
 					String sql = connection.formatString("SELECT id FROM containscreative WHERE creativetaskid = {?} AND taskconstellationid = {?};", Value.fromString(t.getID()),
 							Value.fromString(this.id));
-					String ccid = connection.query(sql).iterator().next().iterator().next().asString();
-					// link a new Answer to the found containscreative entry
 					String answerid = connection.generateID("answer");
-					sql = connection.formatString("INSERT INTO answer (id,containscreativeid) VALUES ({?}, {?});", Value.fromString(answerid), Value.fromString(ccid));
+					args.add(Value.fromString(answerid));
+					args.add(Value.fromString(connection.query(sql).iterator().next().iterator().next().asString()));
+					
+					args.add(Value.fromString(getCurrentWorkerID()));
+					
+					sql = connection.formatString("INSERT INTO answer (id,containscreativeid,workerid) VALUES ({?}, {?},{?});", args);
 					connection.query(sql);
 					ret = new PersistentAnswer(answerid, connection);
 				}
@@ -388,7 +437,7 @@ class PersistentTaskConstellation implements MutableTaskConstellation {
 		} catch (NoSuchElementException e) {
 			throw new DatabaseException(e.getMessage() + ", \n probably the Task at the given index is not a CreativeTask");
 		} catch (SQLException ex) {
-			throw new DatabaseException(ex.getMessage() + " an Error occured whilst trying to create an Answer");
+			throw new DatabaseException(ex.getMessage() + " an Error occured whilst trying to create an Answer" );
 		}
 		return ret;
 
@@ -402,13 +451,14 @@ class PersistentTaskConstellation implements MutableTaskConstellation {
 			int i = 0;
 			for (Task t : getTasks()) {
 				if (i == index) {
-					// fetch the containsevaluativeid
+					List<Value> args = new ArrayList<Value>();
 					String sql = connection.formatString("SELECT id FROM containsevaluative WHERE ratingtaskid = {?} AND taskconstellationid = {?};", Value.fromString(t.getID()),
 							Value.fromString(this.id));
-					String ceid = connection.query(sql).iterator().next().iterator().next().asString();
-					// link a new Rating to the found containsevaluative entry
 					String ratingid = connection.generateID("rating");
-					sql = connection.formatString("INSERT INTO rating (id,containsevaluativeid) VALUES ({?}, {?});", Value.fromString(ratingid), Value.fromString(ceid));
+					args.add(Value.fromString(ratingid));
+					args.add(Value.fromString(connection.query(sql).iterator().next().iterator().next().asString()));
+					args.add(Value.fromString(getCurrentWorkerID()));
+					sql = connection.formatString("INSERT INTO rating (id,containsevaluativeid,workerid) VALUES ({?}, {?},{?});",args);
 					connection.query(sql);
 					ret = new PersistentRating(ratingid, connection);
 				}
@@ -446,7 +496,7 @@ class PersistentTaskConstellation implements MutableTaskConstellation {
 			}
 
 		} catch (NoSuchElementException ex) {
-			throw new DatabaseException(ex.getMessage());
+			ret.clear();
 
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());
@@ -503,4 +553,220 @@ class PersistentTaskConstellation implements MutableTaskConstellation {
 		return ret;
 	}
 
+	@Override
+	public void addControlQuestion(MutableControlQuestion coq) throws DatabaseException {
+		try {
+			int currentLength = this.getTaskCount();
+			List<Value> args = new ArrayList<Value>();
+			args.add((Value.fromString(coq.getID())));
+			args.add(Value.fromString(id));
+			MutableControlQuestion cq = coq;
+			args.add(Value.fromString(cq.getID()));
+			args.add((Value.fromInt(currentLength)));
+			String sql = connection.formatString("INSERT INTO containscontrol (id,taskconstellationid,controlquestionid,task_position) VALUES ({?},{?},{?},{?}); ", args);
+			connection.query(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+	}
+
+	@Override
+	public MutableControlQuestion getMutableControlQuestion(int taskPosition) throws DatabaseException {
+		String taskid = null;
+		try {
+			String sql = connection.formatString("SELECT controlquestionid FROM containscontrol WHERE task_position = {?} AND taskconstellationid = {?}; ", Value.fromInt(taskPosition),
+					Value.fromString(this.id));
+			taskid = connection.query(sql).iterator().next().iterator().next().asString();
+
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		return new PersistentControlQuestion(connection, taskid);
+	}
+
+	@Override
+	public void addCalibrationQuestion(MutableCalibrationQuestion coq) throws DatabaseException {
+		try {
+			int currentLength = this.getTaskCount();
+			List<Value> args = new ArrayList<Value>();
+			args.add((Value.fromString(coq.getID())));
+			args.add(Value.fromString(id));
+			MutableCalibrationQuestion cq = coq;
+			args.add(Value.fromString(cq.getID()));
+			args.add((Value.fromInt(currentLength)));
+			String sql = connection.formatString("INSERT INTO containscalibtask (id,taskconstellationid,calibrationquestionid,task_position) VALUES ({?},{?},{?},{?}); ", args);
+			connection.query(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+	}
+
+	@Override
+	public MutableCalibrationQuestion getMutableCalibrationQuestion(int taskPosition) throws DatabaseException {
+		String taskid = null;
+		try {
+			String sql = connection.formatString("SELECT calibrationquestionid FROM containscalibtask WHERE task_position = {?} AND taskconstellationid = {?}; ", Value.fromInt(taskPosition),
+					Value.fromString(this.id));
+			taskid = connection.query(sql).iterator().next().iterator().next().asString();
+
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		return new PersistentCalibrationQuestion(taskid, connection);
+	}
+
+
+	@Override
+	public MutableControlAnswer answerControlQuestionAt(int index) throws DatabaseException {
+		MutableControlAnswer ret = null;
+		try {
+			int i = 0;
+			for (Task t : getTasks()) {
+				if (i == index) {
+					List<Value> args = new ArrayList<Value>();
+					String answerid = connection.generateID("controlanswer");
+					args.add(Value.fromString(answerid));
+					String sql = connection.formatString("SELECT id FROM containscontrol WHERE controlquestionid = {?} AND taskconstellationid = {?};", Value.fromString(t.getID()),
+							Value.fromString(this.id));
+					args.add(Value.fromString(connection.query(sql).iterator().next().iterator().next().asString()));
+
+					args.add(Value.fromString(getCurrentWorkerID()));
+					sql = connection.formatString("INSERT INTO controlanswer (id,controlquestionid,workerid) VALUES ({?}, {?},{?});",args);
+					connection.query(sql);
+					ret = new PersistentControlAnswer(connection, answerid);
+				}
+				i++;
+			}
+		} catch (NoSuchElementException e) {
+			throw new DatabaseException(e.getMessage() + ", \n probably the Task at the given index is not a Controlquestion");
+		} catch (SQLException ex) {
+			throw new DatabaseException(ex.getMessage() + " an Error occured whilst trying to create an Controlanswer");
+		}
+		return ret;
+
+	}
+
+	@Override
+	public MutableCalibrationAnswer answerCalibrationQuestionAt(int index) throws DatabaseException {
+		MutableCalibrationAnswer ret = null;
+		try {
+			int i = 0;
+			
+			for (Task t : getTasks()) {
+				if (i == index) {
+					List<Value> args = new ArrayList<Value>();
+					String answerid = connection.generateID("calibrationanswer");
+					args.add(Value.fromString(answerid));
+					String sql = connection.formatString("SELECT id FROM containscalibtask WHERE calibrationquestionid = {?} AND taskconstellationid = {?};", Value.fromString(t.getID()),
+							Value.fromString(this.id));
+					args.add(Value.fromString(connection.query(sql).iterator().next().iterator().next().asString()));
+
+					args.add(Value.fromString(getCurrentWorkerID()));
+					Logger.debug("==================" + args.toString());
+					sql = connection.formatString("INSERT INTO calibrationanswer (id,calibrationquestionid,workerid) VALUES ({?}, {?},{?});",args);
+					connection.query(sql);
+					ret = new PersistentCalibrationAnswer(connection, answerid);
+				}
+				i++;
+			}
+		} catch (NoSuchElementException e) {
+			throw new DatabaseException(e.getMessage() + ", \n probably the Task at the given index is not a Calibrationanswer");
+		} catch (SQLException ex) {
+			throw new DatabaseException(ex.getMessage() + " an Error occured whilst trying to create an Calibrationanswer");
+		}
+		return ret;
+	}
+	
+	private String getCurrentWorkerID() throws DatabaseException{
+		try {
+			String sql = connection.formatString("SELECT worker_mturkid FROM assignment, taskconstellation WHERE assignment.id = {?};",
+					Value.fromString(this.getAssignment().getID()));			
+			String result = connection.query(sql).iterator().next().iterator().next().asString();
+			Logger.debug("==============" +result);
+			
+			return result;
+		} catch (SQLException ex) {
+			throw new DatabaseException(ex.getMessage() + " an Error occured whilst trying to get the workerid");
+		}
+	}
+
+	@Override
+	public MutableCalibrationAnswer answerCalibrationQuestionAt(String calibrationquestid) throws DatabaseException {
+		MutableCalibrationAnswer ret = null;
+		try {
+			for (Task t : getTasks()) {
+				if (t.getID().equals(calibrationquestid)) {
+					List<Value> args = new ArrayList<Value>();
+					String answerid = connection.generateID("calibrationanswer");
+					args.add(Value.fromString(answerid));
+					String sql = connection.formatString("SELECT id FROM containscalibtask WHERE calibrationquestionid = {?} AND taskconstellationid = {?};", Value.fromString(t.getID()),
+							Value.fromString(this.id));
+					args.add(Value.fromString(connection.query(sql).iterator().next().iterator().next().asString()));
+					args.add(Value.fromString(getCurrentWorkerID()));
+					sql = connection.formatString("INSERT INTO calibrationanswer (id,calibrationquestionid,workerid) VALUES ({?}, {?},{?});",args);
+					connection.query(sql);
+					ret = new PersistentCalibrationAnswer(connection, answerid);
+				}
+			}
+		} catch (NoSuchElementException e) {
+			throw new DatabaseException(e.getMessage() + ", \n probably the Task at the given index is not a Calibrationanswer");
+		} catch (SQLException ex) {
+			throw new DatabaseException(ex.getMessage() + " an Error occured whilst trying to create an Calibrationanswer");
+		}
+		return ret;
+	}
+
+	@Override
+	public MutableAnswer answerCreativeTaskAt(String creativeTaskId) throws DatabaseException {
+		MutableAnswer ret = null;
+		try {
+			for (Task t : getTasks()) {
+				if (t.getID().equals(creativeTaskId)) {
+					List<Value> args = new ArrayList<Value>();
+					String sql = connection.formatString("SELECT id FROM containscreative WHERE creativetaskid = {?} AND taskconstellationid = {?};", Value.fromString(t.getID()),
+							Value.fromString(this.id));
+					String answerid = connection.generateID("answer");
+					args.add(Value.fromString(answerid));
+					args.add(Value.fromString(connection.query(sql).iterator().next().iterator().next().asString()));
+					args.add(Value.fromString(getCurrentWorkerID()));
+					sql = connection.formatString("INSERT INTO answer (id,containscreativeid,workerid) VALUES ({?}, {?},{?});",args);
+					connection.query(sql);
+					ret = new PersistentAnswer(answerid, connection);
+				}
+			}
+		} catch (NoSuchElementException e) {
+			throw new DatabaseException(e.getMessage() + ", \n probably the Task at the given index is not a CreativeTask");
+		} catch (SQLException ex) {
+			throw new DatabaseException(ex.getMessage() + " an Error occured whilst trying to create an Answer");
+		}
+		return ret;
+	}
+	
+	@Override
+	public MutableRating addRatingToRatingTaskAt(String ratingTaskId)
+			throws DatabaseException {
+		MutableRating ret = null;
+		try {
+			for (Task t : getTasks()) {
+				if (t.getID().equals(ratingTaskId)) {
+					List<Value> args = new ArrayList<Value>();
+					String sql = connection.formatString("SELECT id FROM containsevaluative WHERE ratingtaskid = {?} AND taskconstellationid = {?};", Value.fromString(t.getID()),
+							Value.fromString(this.id));
+					String ratingid = connection.generateID("rating");
+					args.add(Value.fromString(ratingid));
+					args.add(Value.fromString(connection.query(sql).iterator().next().iterator().next().asString()));
+					args.add(Value.fromString(getCurrentWorkerID()));
+					sql = connection.formatString("INSERT INTO rating (id,containsevaluativeid,workerid) VALUES ({?}, {?},{?});",args);
+					connection.query(sql);
+					ret = new PersistentRating(ratingid, connection);
+				}
+			}
+		} catch (NoSuchElementException e) {
+			throw new DatabaseException(e.getMessage() + ", \n probably the Task at the given index is not a RatingTask");
+		} catch (SQLException ex) {
+			throw new DatabaseException(ex.getMessage() + " an Error occured whilst trying to create an Answer");
+		}
+		return ret;
+
+	}
 }

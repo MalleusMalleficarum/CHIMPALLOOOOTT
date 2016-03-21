@@ -25,5 +25,18 @@ public interface RatingTask extends Task {
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
 	public Iterable<? extends Answer> getAnswersToBeRated() throws DatabaseException;
+	
+	/**
+	 * Gets the creative task
+	 * @return creative task
+	 * @throws DatabaseException for databaseprobs
+	 */
+	public CreativeTask getCreativeTask() throws DatabaseException;
 
+	/**
+	 * gets the description
+	 * @return description
+	 * @throws DatabaseException for databaseprobs
+	 */
+	public String getDescription() throws DatabaseException;
 }

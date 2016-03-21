@@ -15,7 +15,7 @@ import edu.kit.ipd.creativecrowd.readablemodel.Task;
 /**
  * This class provides the order of an experiment for our experiment.
  * In Phase 1 only creative tasks are given to workers
- * in phase 2 creative tasks an worker tasks are given to workers
+ * in phase 2 creative tasks and worker tasks are given to workers
  * in phase 3 only rating tasks are given to workers
  * 
  * @author Anika
@@ -64,7 +64,7 @@ public class BoehmscherTCM extends FreeformTaskConstellationMutator implements T
 
 			else if (nrOfRatingTasks < ex.getMaxNumberOfRatingsPerAssignment()
 					&& tc.getCurrentTask() instanceof RatingTask) {
-				if (!generateAndAddRatingTask(tc, ex, ass)) {
+				if (!this.generateAndAddRatingTask(tc, ex, ass)) {
 					tc.setCurrentTask(tc.getTaskCount() - 1);
 					return tc;
 				}
@@ -75,7 +75,7 @@ public class BoehmscherTCM extends FreeformTaskConstellationMutator implements T
 			}
 			break;
 		case Next:
-			if (!generateAndAddRatingTask(tc, ex, ass)) {
+			if (!this.generateAndAddRatingTask(tc, ex, ass)) {
 				tc.setCurrentTask(tc.getTaskCount() - 1);
 				return tc;
 			}
@@ -83,7 +83,7 @@ public class BoehmscherTCM extends FreeformTaskConstellationMutator implements T
 			break;
 		case Start:
 			if (phase == 3) {
-				if (!generateAndAddRatingTask(tc, ex, ass)) {
+				if (!this.generateAndAddRatingTask(tc, ex, ass)) {
 					tc.setCurrentTask(tc.getTaskCount() - 1);
 					return tc;
 				}

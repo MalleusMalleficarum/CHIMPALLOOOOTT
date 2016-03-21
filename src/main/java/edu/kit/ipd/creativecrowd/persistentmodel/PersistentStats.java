@@ -1,6 +1,7 @@
 package edu.kit.ipd.creativecrowd.persistentmodel;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import edu.kit.ipd.creativecrowd.database.DatabaseConnection;
 import edu.kit.ipd.creativecrowd.database.Value;
@@ -8,6 +9,8 @@ import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableStats;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableTaskConstellation;
+import edu.kit.ipd.creativecrowd.readablemodel.Assignment;
+import edu.kit.ipd.creativecrowd.readablemodel.Experiment;
 
 /**
  * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableStats
@@ -46,7 +49,7 @@ class PersistentStats implements MutableStats {
 			String sql = connection.formatString(
 					"SELECT id FROM assignment WHERE is_submitted = 0 AND  strftime('%s','now') - strftime('%s',sqltime) < {?} AND experimentid = {?};",
 					Value.fromLong(workerTimeoutSeconds), Value.fromString(this.getExperiment().getID()));
-			for (Iterable<Value> row : connection.query(sql)) {
+			for (@SuppressWarnings("unused") Iterable<Value> row : connection.query(sql)) {
 				ret++;
 			}
 
@@ -158,6 +161,32 @@ class PersistentStats implements MutableStats {
 		}
 		return ret;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see edu.kit.ipd.creativecrowd.readablemodel.Stats#getTimeSinceLastSubmission()
+	 */
+	@Override
+	public long getTimeSinceLastSubmission() throws DatabaseException {
+		Experiment exp = this.getExperiment();
+		Iterable<? extends Assignment> expAssignments = exp.getAssignments();
+		String currentTimestamp;
+		try {
+			String sql = "SELECT CURRENT_TIMESTAMP;";
+			currentTimestamp = connection.query(sql).iterator().next().iterator().next().asString();
+		} catch (SQLException e){
+			throw new DatabaseException(e.getMessage());
+		}
+		Timestamp currentTime = Timestamp.valueOf(currentTimestamp);
+		Timestamp latest = Timestamp.valueOf(this.getTimestampBegin());
+		for (Assignment assg : expAssignments) {
+			if (assg.isSubmitted()) {
+				Timestamp assgTime = Timestamp.valueOf(assg.getTimestampSubmission());
+				latest = latest.before(assgTime)? assgTime : latest;
+			}
+		}
+		return currentTime.getTime() - latest.getTime();
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -211,5 +240,4 @@ class PersistentStats implements MutableStats {
 		}
 		return ret;
 	}
-
 }

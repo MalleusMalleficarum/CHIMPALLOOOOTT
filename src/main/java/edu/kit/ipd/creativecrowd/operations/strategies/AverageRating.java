@@ -5,6 +5,7 @@ import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRating;
 import edu.kit.ipd.creativecrowd.operations.AnswerQualityIndexCalculator;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
+import edu.kit.ipd.creativecrowd.readablemodel.RatingOption;
 
 /**
  * This class calcs the quality indexes of answers of an CreativeTask
@@ -23,6 +24,7 @@ public class AverageRating extends StrategyWithParams implements AnswerQualityIn
 	@Override
 	public void run(MutableExperiment ex) throws DatabaseException {
 		for (MutableAnswer ans : ex.getCreativeTask().getAnswers()) {
+			if(!ans.isInvalid()) {
 			float sumOfWeights = 0;
 			float numericRatings = 0;
 			for (MutableRating rat : ans.getRatings()) {
@@ -35,8 +37,20 @@ public class AverageRating extends StrategyWithParams implements AnswerQualityIn
 			}
 			else {
 				qualityIndex = numericRatings / sumOfWeights;
+				float dif = 1000;
+				float finalquality = 0;
+				for(RatingOption ro: ex.getRatingOptions()) {
+					if (Math.abs(qualityIndex - ro.getValue()) < dif) {
+						dif = Math.abs(qualityIndex) - ro.getValue();
+						finalquality = ro.getValue();
+					}
+				}
+				ans.setFinalQualityIndex(finalquality);
 			}
-			ans.setFinalQualityIndex(qualityIndex);
+			}
+			else {
+				ans.setFinalQualityIndex(0);
+			}
 		}
 
 	}

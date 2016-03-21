@@ -1,8 +1,9 @@
 package edu.kit.ipd.creativecrowd.mutablemodel;
 
-import java.util.Map;
 
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
+import edu.kit.ipd.creativecrowd.readablemodel.ConfigModel;
 import edu.kit.ipd.creativecrowd.readablemodel.Experiment;
 
 /**
@@ -73,22 +74,6 @@ public interface MutableExperiment extends Experiment {
 	public Iterable<? extends MutableRatingTask> getRatingTasks() throws DatabaseException;
 
 	/**
-	 * Adds the rating option.
-	 *
-	 * @return the mutable rating option
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public MutableRatingOption addRatingOption() throws DatabaseException;
-
-	/**
-	 * Gets the rating options.
-	 *
-	 * @return the rating options
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public Iterable<? extends MutableRatingOption> getRatingOptions() throws DatabaseException;
-
-	/**
 	 * Mark as finished.
 	 *
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
@@ -103,123 +88,72 @@ public interface MutableExperiment extends Experiment {
 	public void markExperimentAsSoftFinished() throws DatabaseException;
 
 	/**
-	 * Sets the description.
-	 *
-	 * @param description the new description
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public void setDescription(String description) throws DatabaseException;
-
-	/**
-	 * Sets the budget.
-	 *
-	 * @param cents the new budget
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public void setBudget(int cents) throws DatabaseException;
-
-	/**
-	 * Sets the basic payment.
-	 *
-	 * @param cents the new basic payment
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public void setBasicPaymentHIT(int cents) throws DatabaseException;
-
-	/**
-	 * Sets the basic payment of an answer.
-	 *
-	 * @param cents the new creative task payment
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public void setBasicPaymentAnswer(int cents) throws DatabaseException;
-
-	/**
-	 * Sets the rating task payment.
-	 *
-	 * @param cents the new rating task payment
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public void setBasicPaymentRating(int cents) throws DatabaseException;
-
-	/**
-	 * Sets the HIT title.
-	 *
-	 * @param title the new HIT title
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public void setHITTitle(String title) throws DatabaseException;
-
-	/**
-	 * Sets the HIT description.
-	 *
-	 * @param description the new HIT description
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public void setHITDescription(String description) throws DatabaseException;
-
-	/**
-	 * Sets the tags.
-	 *
-	 * @param tags the new tags
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public void setTags(Iterable<String> tags) throws DatabaseException;
-
-	/**
-	 * Sets the qualifications.
-	 *
-	 * @param qualifications the new qualifications
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public void setQualifications(Iterable<String> qualifications) throws DatabaseException;
-
-	/**
-	 * Sets the bonus payment.
-	 *
-	 * @param cents the new bonus payment
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public void setBonusPayment(int cents) throws DatabaseException;
-
-	/**
 	 * Sets the hit id.
 	 *
 	 * @param id the new hit id
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
 	public void setHitID(String id) throws DatabaseException;
-
+	
 	/**
-	 * Sets the strategy params.
+	 * Adds a controlquestion.
 	 *
-	 * @param params the params
+	 * @return the controlquestion
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
-	public void setStrategyParams(Map<String, String> params) throws DatabaseException;
-
+	public MutableControlQuestion addControlQuestion() throws DatabaseException;
+	
 	/**
-	 * Sets the maximum number of ratings per assignment.
+	 * Gets the controlquestions for this experiment
 	 *
-	 * @param the maximum number of ratings per assignment
-	 * @throws DatabaseException
+	 * @return an iterable with the controlquestions
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
-	public void setMaxNumberOfRatingsPerAssignment(int maxRatings) throws DatabaseException;
-
+	public Iterable<? extends MutableControlQuestion> getControlQuestions() throws DatabaseException;
+	
 	/**
-	 * Sets the maximum number of answers per assignment.
+	 * Adds a calibrationquestion.
 	 *
-	 * @param the maximum number of answers per assignment
-	 * @throws DatabaseException
+	 * @return the calibrationquestion
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
-	public void setMaxNumberOfAnswersPerAssignment(int maxAnswers) throws DatabaseException;
-
+	public MutableCalibrationQuestion addCalibrationQuestion() throws DatabaseException;
+	
 	/**
-	 * Sets the name of the class that is used by the view to display the RatingOptions
+	 * Gets the calibrationquestions for this experiment
+	 *
+	 * @return an iterable with the calibrationquestions
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public Iterable<? extends MutableCalibrationQuestion> getCalibrationQuestions() throws DatabaseException;
+	
+	/**
+	 * Assigns the config
 	 * 
-	 * @return a String in the form "edu.kit.ipd.creativecrowd.view.RatingView"
+	 * @param conf the config for this experiment
+	 * @throws DatabaseException if the SQL request fails
+	 * @author Thomas Friedel
+	 */
+	public void setConfig(ConfigModel conf) throws DatabaseException;
+
+	/**
+	 * removes the controlquest
+	 * @param quest to remove
 	 * @throws DatabaseException
 	 */
-	public void setRatingTaskViewClass(String ratingTaskViewClassName) throws DatabaseException;
-
+	public void removeControlQuestion(String quest) throws DatabaseException;
+	
+	/**
+	 * removes the calibquest
+	 * @param quest to remove
+	 * @throws DatabaseException
+	 */
+	public void removeCalibrationQuestion(String quest) throws DatabaseException;
+	
+	/**
+	 * returns all workers who are not allowed to take part in this experiment
+	 * @return the list of workers
+	 * @throws DatabaseException 
+	 */
+	public Iterable<WorkerId> getBlockedWorkers() throws DatabaseException;
 }

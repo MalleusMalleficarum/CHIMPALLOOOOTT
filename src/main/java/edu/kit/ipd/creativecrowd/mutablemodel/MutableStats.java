@@ -1,5 +1,7 @@
 package edu.kit.ipd.creativecrowd.mutablemodel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 import edu.kit.ipd.creativecrowd.readablemodel.Stats;
 
@@ -24,5 +26,6 @@ public interface MutableStats extends Stats {
 	 * @return the experiment of the stats
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
+	@JsonIgnore
 	public MutableExperiment getExperiment() throws DatabaseException;
 }

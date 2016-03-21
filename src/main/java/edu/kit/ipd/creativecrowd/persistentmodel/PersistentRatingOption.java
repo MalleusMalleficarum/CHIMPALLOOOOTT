@@ -2,6 +2,7 @@ package edu.kit.ipd.creativecrowd.persistentmodel;
 
 import java.sql.SQLException;
 
+import edu.kit.ipd.chimpalot.util.Logger;
 import edu.kit.ipd.creativecrowd.database.DatabaseConnection;
 import edu.kit.ipd.creativecrowd.database.Value;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingOption;
@@ -40,11 +41,14 @@ class PersistentRatingOption implements MutableRatingOption {
 		try {
 			String sql = connection.formatString("SELECT value FROM ratingoption WHERE id = {?};", Value.fromString(id));
 			Iterable<Iterable<Value>> values = connection.query(sql);
+			Logger.debug("IDreq: " + id);
+			Logger.debug(values.toString());
 			if (values.iterator().hasNext()) {
 				result = values.iterator().next().iterator().next().asFloat();
+				
 			}
 			else {
-				throw new DatabaseException("wanted Experiment does not exist");
+				throw new DatabaseException("wanted RatingOption does not exist");
 			}
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());
@@ -66,7 +70,7 @@ class PersistentRatingOption implements MutableRatingOption {
 				result = texts.iterator().next().iterator().next().asString();
 			}
 			else {
-				throw new DatabaseException("wanted Experiment does not exist");
+				throw new DatabaseException("wanted RatingOption does not exist");
 			}
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());

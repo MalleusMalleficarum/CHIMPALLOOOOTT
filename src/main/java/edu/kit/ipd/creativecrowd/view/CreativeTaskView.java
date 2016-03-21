@@ -6,15 +6,16 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.kit.ipd.chimpalot.jsonclasses.ConfigModelJson;
+import edu.kit.ipd.chimpalot.util.Logger;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
+import edu.kit.ipd.creativecrowd.readablemodel.ConfigModel;
 import edu.kit.ipd.creativecrowd.readablemodel.CreativeTask;
 import edu.kit.ipd.creativecrowd.readablemodel.Experiment;
 import edu.kit.ipd.creativecrowd.readablemodel.TaskConstellation;
-import edu.kit.ipd.creativecrowd.util.Logger;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
 
 public class CreativeTaskView implements TaskView{
 
@@ -138,6 +139,66 @@ public class CreativeTaskView implements TaskView{
 		
 
 		return "";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see edu.kit.ipd.creativecrowd.view.TaskView#createPreview(edu.kit.ipd.creativecrowd.readablemodel.ConfigModel)
+	 */
+	@Override
+	public String createPreview(ConfigModelJson config) {
+			return createAnyPreview(config);
+	}
+
+	public String createPreview(Experiment exp) throws DatabaseException {
+		return this.createAnyPreview(exp.getConfig());
+	}
+
+	private String createAnyPreview(ConfigModel config) {
+		//is Singleton
+		Configuration cfg = FreemarkerConfig.getConfig();
+
+		// Create the root hash
+		Map<String, String> root = new HashMap<String, String>();
+		// Put strings into map
+		try {
+			root.put("task", config.getTaskQuestion());
+			String picUrl = config.getPictureURL();
+			if(picUrl != null){
+				root.put("pic", picUrl);
+			}else{
+				root.put("pic", "");
+			}
+			String exdesc = config.getTaskDescription();
+			if(exdesc != null){
+				root.put("exdesc", exdesc);
+			}else{
+				root.put("exdesc", "");
+			}
+			root.put("expid", "id");
+			String licenseUrl = config.getTaskSourceURL();
+			if(licenseUrl != null){
+
+				root.put("iframe", config.getTaskSourceURL());
+			} else {
+				root.put("iframe", "");
+			}
+		} catch (DatabaseException e) {
+			Logger.logException(e.getMessage());
+		}
+		root.put("next", "true");		
+		root.put("again", "true");		
+		root.put("sub", "true");
+
+		try{
+			Template temp = cfg.getTemplate("creativetaskpreview.ftl");  
+			Writer out = new StringWriter();
+			temp.process(root, out);  
+			return out.toString();
+		}catch(IOException|TemplateException exc){
+			Logger.logException(exc.getMessage());
+		}
+	return "";
 	}
 
 }

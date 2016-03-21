@@ -9,13 +9,14 @@ import edu.kit.ipd.creativecrowd.database.Value;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableCreativeTask;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRating;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableWorker;
 
 /**
  * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer
  * @see edu.kit.ipd.creativecrowd.readablemodel.Answer
  * @author Philipp & Alexis
  */
-class PersistentAnswer implements MutableAnswer {
+public class PersistentAnswer implements MutableAnswer {
 
 	/** The connection to the database. */
 	private DatabaseConnection connection;
@@ -29,7 +30,7 @@ class PersistentAnswer implements MutableAnswer {
 	 * @param id, a unique id of a persistent answer
 	 * @param connection, a connection to the database
 	 */
-	PersistentAnswer(String id, DatabaseConnection connection) {
+	public PersistentAnswer(String id, DatabaseConnection connection) {
 		this.id = id;
 		this.connection = connection;
 	}
@@ -258,4 +259,93 @@ class PersistentAnswer implements MutableAnswer {
 
 		return ret;
 	}
+
+	@Override
+	public MutableWorker getWorker() throws DatabaseException {
+		MutableWorker ret = null;
+		try {
+			String sql = connection.formatString(
+					"SELECT workerid FROM answer WHERE id = {?};",
+					Value.fromString(id));
+			String ccid = connection.query(sql).iterator().next().iterator()
+					.next().asString();
+			ret = new PersistentWorker(connection, ccid);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+
+		return ret;
+	}
+
+	@Override
+	public void setWorkerID(String workerID) throws DatabaseException {
+		try {
+			String sql = connection.formatString(
+					"UPDATE answer SET workerid = {?} WHERE id = {?};",Value.fromString(workerID),
+					Value.fromString(id));
+			connection.query(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		
+	}
+	
+	@Override
+	public String getMturkAssignmentId() throws DatabaseException {
+		try {
+			// lookup the containscreativeid on which this answer points at
+			String sql = connection.formatString(
+					"SELECT containscreativeid FROM answer WHERE id = {?};",
+					Value.fromString(id));
+			String containscreativeid = connection.query(sql).iterator().next()
+					.iterator().next().asString();
+			// lookup for the taskconstellationid in the containscreative-table:
+			sql = connection
+					.formatString(
+							"SELECT taskconstellationid FROM containscreative WHERE id = {?};",
+							Value.fromString(containscreativeid));
+			String tcId = connection.query(sql).iterator().next().iterator()
+					.next().asString();
+			// get the fitting assignment for the found taskconstellationid
+			sql = connection.formatString(
+					"SELECT assignmentid FROM taskconstellation WHERE id = {?};",
+					Value.fromString(tcId));
+			String assId = connection.query(sql).iterator().next().iterator()
+					.next().asString();
+			sql = connection.formatString("SELECT mturkid FROM assignment WHERE id = {?}",Value.fromString(assId));
+			String mturk = connection.query(sql).iterator().next().iterator().next().asString();
+		return mturk;
+	}catch (SQLException e) {
+		throw new DatabaseException(e.getMessage());
+	}
+	}
+
+	@Override
+	public void markAsInvalid() throws DatabaseException {
+		try {
+			String sql = connection.formatString("UPDATE answer SET marked_as_invalid = {?} WHERE id = {?};", Value.fromInt(1), Value.fromString(this.id));
+			connection.query(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+	}
+		
+
+	@Override
+	public boolean isInvalid() throws DatabaseException {
+		int ret = 0;
+		try {
+			String sql = connection.formatString("SELECT marked_as_invalid FROM answer WHERE id = {?};", Value.fromString(this.id));
+			ret = connection.query(sql).iterator().next().iterator().next().asInt();
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		if (ret == 0) {
+			return false;
+	}
+		else 
+			return true;
+	}
+
+
 }

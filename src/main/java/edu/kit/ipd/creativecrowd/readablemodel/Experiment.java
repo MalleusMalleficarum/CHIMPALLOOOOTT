@@ -1,6 +1,6 @@
 package edu.kit.ipd.creativecrowd.readablemodel;
 
-import edu.kit.ipd.creativecrowd.mturk.AssignmentId;
+import edu.kit.ipd.creativecrowd.crowdplatform.AssignmentId;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 
 /**
@@ -83,5 +83,36 @@ public interface Experiment extends AbstractExperiment {
 	 * @return the Id of the HIT on Mturk belonging to this experiment
 	 */
 	public String getHitID() throws DatabaseException;
+	
+	/**
+	 * returns all ControlQuestion for this Experiment
+	 * 
+	 * @return an Iterable containing all ControlQuestion
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public Iterable<? extends ControlQuestion> getControlQuestions() throws DatabaseException;
 
+	/**
+	 * returns all CalibrationQuestion for this Experiment
+	 * 
+	 * @return an Iterable containing all CalibrationQuestion
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public Iterable<? extends CalibrationQuestion> getCalibrationQuestions() throws DatabaseException;
+
+	/**
+	 * returns the associated configfile.
+	 * 
+	 * @return the ConfigModel from which this Experiment was created from.
+	 * @throws DatabaseException if the SQL request fails
+	 * @author Thomas Friedel
+	 */
+	public ConfigModel getConfig() throws DatabaseException; 
+	
+	/**
+	 * returns the type of an experiment
+	 * @return the type of an Experiment
+	 * @throws DatabaseException 
+	 */
+	public ExperimentType getType() throws DatabaseException;
 }

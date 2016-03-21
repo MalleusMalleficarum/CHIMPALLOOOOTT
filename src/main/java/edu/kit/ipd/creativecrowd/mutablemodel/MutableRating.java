@@ -2,6 +2,7 @@ package edu.kit.ipd.creativecrowd.mutablemodel;
 
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 import edu.kit.ipd.creativecrowd.readablemodel.Rating;
+import edu.kit.ipd.creativecrowd.readablemodel.RatingOption;
 
 /**
  * adds setter functionality to the Rating class.
@@ -22,10 +23,10 @@ public interface MutableRating extends Rating {
 	/**
 	 * Sets the rating option.
 	 *
-	 * @param option the new rating option
+	 * @param rOptFin the new rating option
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
-	public void setRatingOption(MutableRatingOption option) throws DatabaseException;
+	public void setRatingOption(RatingOption rOptFin) throws DatabaseException;
 
 	/*
 	 * (non-Javadoc)
@@ -47,4 +48,13 @@ public interface MutableRating extends Rating {
 	 * @throws DatabaseException
 	 */
 	public void setFinalQualityIndex(float idx) throws DatabaseException;
+	
+
+	
+	/* 
+	 * sets the ID of the worker who has done this rating
+	 * 
+	 * @param workerid
+	 */
+	public void setWorkerID(String workerID) throws DatabaseException;
 }

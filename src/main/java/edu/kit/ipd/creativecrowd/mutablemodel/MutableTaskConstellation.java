@@ -131,5 +131,86 @@ public interface MutableTaskConstellation extends TaskConstellation {
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
 	public MutableAssignment getAssignment() throws DatabaseException;
+	
+	/**
+	 * Adds the given Controlquestion to this TaskConstellation. 
+	 * 
+	 * @param coq the Controlquestion to be added to this TC
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public void addControlQuestion(MutableControlQuestion coq) throws DatabaseException;
+
+	/**
+	 * Gets the mutablecontrolquestion.
+	 *
+	 * @param taskPosition the task position
+	 * @return the mutablecontrolquestion
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public MutableControlQuestion getMutableControlQuestion(int taskPosition) throws DatabaseException;
+	
+	/**
+	 * Adds the given Calibrationquestion to this TaskConstellation. 
+	 * 
+	 * @param caq the Calibrationquestion to be added to this TC
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public void addCalibrationQuestion(MutableCalibrationQuestion coq) throws DatabaseException;
+
+	/**
+	 * Gets the mutablecalibrationquestion.
+	 *
+	 * @param taskPosition the task position
+	 * @return the mutablecalibrationquestion
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public MutableCalibrationQuestion getMutableCalibrationQuestion(int taskPosition) throws DatabaseException;
+	
+	
+	/**
+	 * Answers the MutableControlQuestionin this TaskConstellation at given index
+	 * 
+	 * @param index which Task should be answered
+	 * @return null if given index is >= this.getTaskCount(), else: a new created Answer (pointing to the Task with the given index) which has to be filled with values
+	 * @throws DatabaseExcetpion if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public MutableControlAnswer answerControlQuestionAt(int index) throws DatabaseException;
+	/**
+	 * Answers the MutableCalibrationQuestion in this TaskConstellation at given index
+	 * 
+	 * @param index which Task should be answered
+	 * @return null if given index is >= this.getTaskCount(), else: a new created Answer (pointing to the Task with the given index) which has to be filled with values
+	 * @throws DatabaseExcetpion if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public MutableCalibrationAnswer answerCalibrationQuestionAt(int index) throws DatabaseException;
+	
+	/**
+	 * Answers the MutableCalibrationQuestion in this TaskConstellation at given id
+	 * 
+	 * @param id which Task should be answered
+	 * @return null if given id is not in database , else: a new created Answer (pointing to the Task with the given index) which has to be filled with values
+	 * @throws DatabaseExcetpion if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public MutableCalibrationAnswer answerCalibrationQuestionAt(String calibrationquestid) throws DatabaseException;
+	
+	/**
+	 * Answers the Creative Task in this TaskConstellation at given id
+	 * 
+	 * @param id which Task should be answered
+	 * @return null if given id is not in database , else: a new created Answer (pointing to the Task with the given index) which has to be filled with values
+	 * @throws DatabaseExcetpion if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public MutableAnswer answerCreativeTaskAt(String creativeTaskId) throws DatabaseException;
+	
+	/**
+	 * Rates the RatingTask at the given id.
+	 * 
+	 * @param id which Task should be rated
+	 * @return a new created Rating (pointing to the Task with the given id) which has to be filled with values
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public MutableRating addRatingToRatingTaskAt(String ratingTaskId) throws DatabaseException;
+
+
 
 }

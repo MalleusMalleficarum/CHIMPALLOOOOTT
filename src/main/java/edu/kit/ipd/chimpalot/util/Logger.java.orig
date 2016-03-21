@@ -1,0 +1,91 @@
+<<<<<<< HEAD:Implementation/CreativeCrowd/src/main/java/edu/kit/ipd/creativecrowd/util/Logger.java
+package edu.kit.ipd.creativecrowd.util;
+/**
+ * This Class represents the basic logger and is intended to unify
+ * all text notifications within the Application.
+ * @author Robin
+ *
+ */
+public final class Logger {
+	/**
+	 * This Enumeration models the States of the Logger, which 
+	 * represent the precision of the Logger with the following order:
+	 * (DEBUG > INFO > ERROR)
+	 * 
+	 * @author Robin
+	 *
+	 */
+=======
+package edu.kit.ipd.chimpalot.util;
+
+public class Logger {
+>>>>>>> origin/master:Implementation/CreativeCrowd/src/main/java/edu/kit/ipd/chimpalot/util/Logger.java
+    private enum LoggerState {
+        DEBUG, LOG, ERROR;
+        private int value() {
+            switch(this) {
+            case DEBUG: return 2;
+            case LOG: return 1;
+            default: return 0;
+            }
+        }
+    }
+    private static LoggerState state = LoggerState.DEBUG;
+    //private Constructor to prevent instantiation.
+	private Logger() {
+
+	}
+	/**
+	 * This method is used for debug purposes and will only log messages if 
+	 * the State of the Logger is at DEBUG (or higher) and should be used for
+	 * messages which are only viable for debugging purposes.
+	 * 
+	 * @param message the message which should be logged
+	 */
+	public static void debug(String message) {
+	    if(state.value() >= LoggerState.DEBUG.value()) {
+	        System.out.println(message);
+	    }
+	    
+	}
+	/**
+	 * This method will only log if the State of the Logger is at LOG or higher
+	 * and should be used for messages which are non-critical, but provide decent
+	 * insight into the software.
+	 * 
+	 * @param message the message which should be logged
+	 */
+	public static void log(String message) {
+	    if(state.value() >= LoggerState.LOG.value()) {
+	        System.out.println(message);
+	    }
+
+	}
+	/**
+	 * This method will always log the given message and should only be 
+	 * used for errors or critical information regarding the Application.
+	 * 
+	 * @param message the message which should be displayed
+	 */
+	public static void error(String message) {
+	    System.out.println(message);
+	}
+	/**
+	 * This method logs a class which is thrown by the document and is not caught correctly
+	 * in that way that it should be logged for further researches
+	 * 
+	 * @param exception The exception which should be logged
+	 */
+	public static void logException(String exception)
+	{
+		System.err.println(exception);
+	}
+	/**
+	 * This method informs other components whether the Logger is in the Debug state
+	 * or not.
+	 * @return the debug state
+	 */
+	public static boolean isDebug() {
+		return state.value() >= LoggerState.DEBUG.value();
+	}
+}

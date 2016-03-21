@@ -5,7 +5,13 @@ package edu.kit.ipd.creativecrowd.connector;
  * 
  * @author simon
  */
-public class ModelException extends Throwable {
+public class ModelException extends Exception {
+	
+	/**
+	 * serial.
+	 */
+	private static final long serialVersionUID = -9203208883786027415L;
+
 	/**
 	 * constructor
 	 * 
@@ -13,5 +19,14 @@ public class ModelException extends Throwable {
 	 */
 	public ModelException(String message) {
 		super(message);
+	}
+	
+	/**
+	 * 
+	 * @param message the exception message
+	 * @param cause the exception that caused this exception. Can be {@code null}.
+	 */
+	public ModelException(String message, Throwable cause) {
+		super(message, cause);
 	}
 }

@@ -33,17 +33,13 @@ public class AssignmentController {
 			connector = new Connector();
 			if (assgId != null
 					&& !(assgId.equals("ASSIGNMENT_ID_NOT_AVAILABLE"))) {
-				AssignmentId mturkAssignmentId = new AssignmentId(
-						sparkRequest.queryParams("assignmentId"));
-				assignmentId = connector.findInternalAssignmentId(
-						mturkAssignmentId, expId);
-				sparkRequest.session(true).attribute("assignment_id",
-						assignmentId);
+				AssignmentId mturkAssignmentId = new AssignmentId(sparkRequest.queryParams("assignmentId"));
+				assignmentId = connector.findInternalAssignmentId(mturkAssignmentId, expId);
+				sparkRequest.session(true).attribute("assignment_id", assignmentId);
 
 				Button b = Button.Start;
 				if (assignmentId != null && !assignmentId.equals("")) {
-					TaskConstellation t = connector.getNewTaskConstellation(
-							expId, assignmentId, b);
+					TaskConstellation t = connector.getNewTaskConstellation(expId, assignmentId, b);
 
 					connector.updateWorkerId(expId, assignmentId, wrkrId);
 				}

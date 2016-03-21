@@ -7,7 +7,7 @@ import edu.kit.ipd.creativecrowd.readablemodel.*;
  * contains setter-methods for Answer objects.
  * 
  * @see edu.kit.ipd.creativecrowd.readablemodel.Answer
- * @author simon
+ * @author Bastian, simon
  */
 public interface MutableAnswer extends Answer {
 
@@ -54,5 +54,31 @@ public interface MutableAnswer extends Answer {
 	 * @return the mutable creative task
 	 */
 	public MutableCreativeTask getCreativeTask() throws DatabaseException;
+	
+	
+	/**
+	 * sets the ID of the worker who has written this answer
+	 * 
+	 * @param workerid
+	 */
+	public void setWorkerID(String workerID) throws DatabaseException;
+	
+	/**
+	 * Returns the mturk assignment ID of the mturk assignment the answer belongs to
+	 * @return the mturk assignment ID 
+	 * @throws DatabaseException 
+	 */
+	public String getMturkAssignmentId() throws DatabaseException;
+	/**
+	 * sets the invalid flag of an answer, this is done if the answer is a duplicate or spoof
+	 * @throws DatabaseException 
+	 */
+	public void markAsInvalid() throws DatabaseException;
+	/**
+	 * returns the invalid flag of this answer
+	 * @return whether the answer is invalid
+	 * @throws DatabaseException 
+	 */
+	public boolean isInvalid() throws DatabaseException;
 
 }

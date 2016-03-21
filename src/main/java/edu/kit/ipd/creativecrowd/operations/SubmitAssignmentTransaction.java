@@ -1,13 +1,32 @@
 package edu.kit.ipd.creativecrowd.operations;
 
-import edu.kit.ipd.creativecrowd.mturk.ConnectionFailedException;
-import edu.kit.ipd.creativecrowd.mturk.IllegalInputException;
-import edu.kit.ipd.creativecrowd.mturk.MTurkConnection;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.imageio.ImageIO;
+
+import edu.kit.ipd.chimpalot.util.StringSimilarityMeasure;
+import edu.kit.ipd.creativecrowd.crowdplatform.ConnectionFailedException;
+import edu.kit.ipd.creativecrowd.crowdplatform.IllegalInputException;
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
+import edu.kit.ipd.creativecrowd.persistentmodel.ExperimentWatchdog;
+import edu.kit.ipd.creativecrowd.readablemodel.Answer;
+import edu.kit.ipd.creativecrowd.readablemodel.ExperimentType;
 import edu.kit.ipd.creativecrowd.readablemodel.Rating;
+import edu.kit.ipd.creativecrowd.transformer.ConfigFileInterpreter;
+import edu.kit.ipd.creativecrowd.transformer.Transformer;
 
 /**
  * This class organises the order of submitting an assignment marks assignment
@@ -58,6 +77,21 @@ public class SubmitAssignmentTransaction extends Transaction {
 				}
 			}
 		}
+		this.validate(ass, experiment);
+		
+		ExperimentWatchdog watchdog = ExperimentWatchdog.getWatchdog(experiment.getID());		
+		for(Answer ans : ass.getTaskConstellation().getAnswers()) {
+			watchdog.increasePermanent();
+			watchdog.increaseSubmitted();
+			if(ans.isInvalid()) {
+				watchdog.increaseDuplicate();
+			}
+		}
+
+		
+		
+		
+		
 		AssignmentPaymentOutcomeCalculator apoc;
 		try {
 			apoc = this.loadAPOCStrategy(experiment.getStrategyParams());
@@ -90,8 +124,131 @@ public class SubmitAssignmentTransaction extends Transaction {
 			end.run(experiment);
 		}
 		else {
-			MTurkConnection connect = new MTurkConnection();
-			connect.extendAssignmentNumber(nrofA, experiment.getHitID());
+			/*
+			 * Originally this was directed to mturk only, now it runs over the transformer
+			 * @Robin 
+			 */
+			Transformer transformer = ConfigFileInterpreter.getTransformer(experiment);
+			transformer.extendAssignmentNumber(nrofA, experiment.getHitID());
+			
+		}
+	}
+	
+	private void validate(MutableAssignment assignment,
+			MutableExperiment experiment) throws DatabaseException {
+		// check if worker was allowed
+		for (WorkerId id : experiment.getBlockedWorkers()) {
+			if (assignment.getWorkerID().equals(id)) {
+				for (MutableAnswer ans : assignment.getTaskConstellation()
+						.getAnswers()) {
+					ans.markAsInvalid();
+					return;
+				}
+			}
+		}
+		if (assignment.getWorker().isBlocked()) {
+			for (MutableAnswer ans : assignment.getTaskConstellation()
+					.getAnswers()) {
+				ans.markAsInvalid();
+				return;
+			}
+		}
+		// check if is duplicate
+		for (MutableAnswer answer : assignment.getTaskConstellation()
+				.getAnswers()) {
+			if (answer.getText().equals("") || answer.getText().equals(null)) {
+				answer.markAsInvalid();
+				return;
+			}
+			for (MutableAnswer a : assignment.getTaskConstellation()
+					.getAnswers()) {
+				if (answer.getText().equals(a.getText())) {
+					if (answer.getID().equals(a.getID())) {
+						continue;
+					} else {
+						answer.markAsInvalid();
+						return;
+					}
+				}
+			}
+		}
+		if (experiment.getType().equals(ExperimentType.Bild)) {
+			HashMap<BufferedImage, MutableAnswer> pictures
+			= new HashMap<BufferedImage, MutableAnswer>();
+			for (MutableAnswer a : experiment.getCreativeTask().getAnswers()) {
+				// we do not want to compare answers with each other
+				if (a.getMturkAssignmentId() == assignment
+						.getMTurkAssignmentID().getId()) {
+					continue;
+				} else {
+					// load answers in hashmap
+					URL url = null;
+					try {
+						url = new URL(a.getText());
+					} catch (MalformedURLException e) {
+						a.markAsInvalid();
+					}
+					try {
+						BufferedImage image = ImageIO.read(url);
+						pictures.put(image, a);
+					} catch (IOException e) {
+						a.markAsInvalid();
+					}
+				}
+			}
+			for(MutableAnswer a: assignment.getTaskConstellation().getAnswers()) {
+				URL url = null;
+				try {
+					url = new URL(a.getText());
+				} catch (MalformedURLException e) {
+					a.markAsInvalid();
+				}
+				try {
+					BufferedImage image = ImageIO.read(url);
+					int[] pixelOfB = new int[image.getWidth() * image.getHeight()];
+					image.getData().getPixel(0, 0, pixelOfB);
+					for(BufferedImage i: pictures.keySet()) {
+
+						int[] pixelOfA = new int[i.getWidth() * i.getHeight()];
+						i.getData().getPixels(0, 0, 0, 0, pixelOfA);
+
+					        if(Arrays.equals(pixelOfA, pixelOfB)) {
+					        	pictures.get(image).markAsInvalid();
+					        }
+					}
+				} catch (IOException e) {
+					a.markAsInvalid();
+				}
+		}
+		
+			
+		} else {
+			StringSimilarityMeasure ssm = new StringSimilarityMeasure();
+			List<String> allAnswers = new ArrayList<String>();
+			for (MutableAnswer answer : experiment.getCreativeTask()
+					.getAnswers()) {
+				allAnswers.add(answer.getText());
+			}
+			Set<List<String>> allNGrams = ssm.getNGrams(allAnswers);
+			for (MutableAnswer answer : assignment.getTaskConstellation()
+					.getAnswers()) {
+				Set<List<String>> newAnswer = new HashSet<List<String>>();
+				List<String> newText = new ArrayList<String>();
+				newText.add(answer.getText());
+				newAnswer.add(newText);
+				double similarity = ssm.getNormalizedSimilarity(newAnswer,
+						allNGrams);
+				if (similarity > 0.70) {
+					answer.markAsInvalid();
+				}
+			}
+		}
+		for(MutableAnswer a: assignment.getTaskConstellation().getAnswers()) {
+			if (a.isInvalid()) {
+				for(MutableAnswer as: assignment.getTaskConstellation().getAnswers()) {
+					as.markAsInvalid();
+				}
+			}
 		}
 	}
 }

@@ -1,10 +1,10 @@
 package edu.kit.ipd.creativecrowd.view;
 
+import edu.kit.ipd.chimpalot.util.Logger;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 import edu.kit.ipd.creativecrowd.readablemodel.Answer;
 import edu.kit.ipd.creativecrowd.readablemodel.Experiment;
 import edu.kit.ipd.creativecrowd.readablemodel.Rating;
-import edu.kit.ipd.creativecrowd.util.Logger;
 
 public class ExportView {
 

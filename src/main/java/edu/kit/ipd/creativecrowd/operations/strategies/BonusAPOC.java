@@ -3,8 +3,6 @@ package edu.kit.ipd.creativecrowd.operations.strategies;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
@@ -32,7 +30,7 @@ public class BonusAPOC extends DefaultAPOC {
 		float workersToReceiveBonus = this.getFloatParam("apoc.workers_to_receive_bonus", 1);
 		if (workersToReceiveBonus < 1.0) {
 			int n = 0;
-			for (MutableAssignment a : ex.getAssignments()) {
+			for (@SuppressWarnings("unused") MutableAssignment a : ex.getAssignments()) {
 				n++;
 			}
 			workersToReceiveBonus = workersToReceiveBonus * n;
@@ -42,7 +40,7 @@ public class BonusAPOC extends DefaultAPOC {
 			bonusPerWorker = 0;
 		}
 		else {
-			bonusPerWorker = this.getIntParam("apoc.bonus_pool", 10) / workersToReceiveBonus;
+			bonusPerWorker = (int) this.getIntParam("apoc.bonus_pool", 10) / workersToReceiveBonus;
 		}
 		for (MutableAssignment as : ex.getAssignments()) {
 			assignmentsSortedByQuality.add(as);
@@ -73,8 +71,10 @@ public class BonusAPOC extends DefaultAPOC {
 		int nrOfResults = 0;
 		try {
 			for (MutableAnswer ans : a1.getTaskConstellation().getAnswers()) {
+				if(!ans.isInvalid()) {
 				nrOfResults++;
 				sumOfIndices += answerWeight * ans.getFinalQualityIndex();
+				}
 			}
 			for (MutableRating rat : a1.getTaskConstellation().getRatings()) {
 				nrOfResults++;

@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
@@ -18,7 +16,6 @@ import edu.kit.ipd.creativecrowd.operations.NoValidTasksException;
 import edu.kit.ipd.creativecrowd.operations.TaskConstellationMutator;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 import edu.kit.ipd.creativecrowd.readablemodel.Answer;
-import edu.kit.ipd.creativecrowd.readablemodel.Assignment;
 import edu.kit.ipd.creativecrowd.readablemodel.Button;
 import edu.kit.ipd.creativecrowd.readablemodel.CreativeTask;
 import edu.kit.ipd.creativecrowd.readablemodel.Rating;
@@ -175,17 +172,21 @@ public class FreeformTaskConstellationMutator extends StrategyWithParams
 			}
 		}
 
-		// Skip answers that we authored in some CreativeTask in the
+		// Skip answers that were authored in some CreativeTask in the
 		// constellation
 		for (MutableAnswer ans : as.getTaskConstellation().getAnswers()) {
 			ineligibleAnswers.add(ans);
 		}
-		// skip answers which haven´t been submitted yet
+		// skip answers which haven´t been submitted yet or spoof answers
 		for (MutableAnswer ans : ex.getCreativeTask().getAnswers()) {
 			if (!ans.isSubmitted()) {
 				ineligibleAnswers.add(ans);
 			}
+			if(ans.isInvalid()) {
+				ineligibleAnswers.add(ans);
+			}
 		}
+		
 
 		// build a prioritized set of eligible answers
 		Comparator<? super MutableAnswer> answerCountComparator = (a1, a2) -> countRatings(
@@ -218,7 +219,7 @@ public class FreeformTaskConstellationMutator extends StrategyWithParams
 				/*-?|Test Repo-Review|Philipp|c9|?*/
 			}/*-?|Anika|Anika|c6|?*/
 			int count = 0;
-			for (Answer ans : rt.getAnswersToBeRated()) {
+			for (@SuppressWarnings("unused") Answer ans : rt.getAnswersToBeRated()) {
 				count++;
 			}
 			if (count == 0) {

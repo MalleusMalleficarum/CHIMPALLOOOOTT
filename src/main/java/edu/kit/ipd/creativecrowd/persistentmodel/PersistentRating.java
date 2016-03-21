@@ -7,6 +7,8 @@ import edu.kit.ipd.creativecrowd.database.Value;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRating;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingOption;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableWorker;
+import edu.kit.ipd.creativecrowd.readablemodel.RatingOption;
 
 /**
  * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableRating
@@ -95,7 +97,7 @@ class PersistentRating implements MutableRating {
 	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableRating#setRatingOption(edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingOption)
 	 */
 	@Override
-	public void setRatingOption(MutableRatingOption option) throws DatabaseException {
+	public void setRatingOption(RatingOption option) throws DatabaseException {
 		try {
 			String sql = connection.formatString("UPDATE rating SET ratingoptionid = {?} where id = {?};", Value.fromString(option.getID()), Value.fromString(id));
 			connection.query(sql);
@@ -175,4 +177,36 @@ class PersistentRating implements MutableRating {
 		}
 		return ret;
 	}
+
+	@Override
+	public MutableWorker getWorker() throws DatabaseException {
+		MutableWorker ret = null;
+		try {
+			String sql = connection.formatString(
+					"SELECT workerid FROM rating WHERE id = {?};",
+					Value.fromString(id));
+			String ccid = connection.query(sql).iterator().next().iterator()
+					.next().asString();
+			ret = new PersistentWorker(connection, ccid);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+
+		return ret;
+	}
+
+	@Override
+	public void setWorkerID(String workerID) throws DatabaseException {
+		try {
+			String sql = connection.formatString(
+					"Update rating set workerid = {?} WHERE id = {?};",Value.fromString(workerID),
+					Value.fromString(id));
+			connection.query(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		
+	}
+
+	
 }

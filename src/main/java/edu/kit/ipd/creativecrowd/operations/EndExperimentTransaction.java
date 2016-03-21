@@ -1,11 +1,20 @@
 package edu.kit.ipd.creativecrowd.operations;
 
-import edu.kit.ipd.creativecrowd.mturk.ConnectionFailedException;
-import edu.kit.ipd.creativecrowd.mturk.IllegalInputException;
-import edu.kit.ipd.creativecrowd.mturk.MTurkConnection;
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.kit.ipd.chimpalot.jsonclasses.ConfigModelJson;
+import edu.kit.ipd.chimpalot.util.Alert;
+import edu.kit.ipd.creativecrowd.crowdplatform.ConnectionFailedException;
+import edu.kit.ipd.creativecrowd.crowdplatform.IllegalInputException;
+import edu.kit.ipd.creativecrowd.mutablemodel.ConfigModelRepo;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableAnswer;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
+import edu.kit.ipd.creativecrowd.persistentmodel.PersistentConfigModelRepo;
+import edu.kit.ipd.creativecrowd.transformer.ConfigFileInterpreter;
+import edu.kit.ipd.creativecrowd.transformer.Transformer;
 
 /**
  * This class provides the order of ending an experiment it disables the hit, and evaluates workers payment.
@@ -25,9 +34,12 @@ public class EndExperimentTransaction extends Transaction {
 	public void run(MutableExperiment ex) throws ConnectionFailedException,
 			DatabaseException, IllegalInputException {
 		// disables HIT on Mturk
-		MTurkConnection connect = new MTurkConnection();
+		/*
+		 * Originally this was directed to mturk only, now it runs over the transformer
+		 * @Robin 
+		 */
+		Transformer connect = ConfigFileInterpreter.getTransformer(ex);
 		connect.endHIT(ex.getHitID());
-		int count = 0;
 
 		RatingQualityIndexCalculator rqic;
 		AnswerQualityIndexCalculator aqic;
@@ -55,7 +67,8 @@ public class EndExperimentTransaction extends Transaction {
 			if (as.isSubmitted()) {
 				String feedback = ftg.generateFeedback(as);
 				if (as.getPaymentOutcome().isApproved()) {
-					connect.approveHIT(as.getMTurkAssignmentID(), feedback);
+					
+					connect.approveHIT(as.getMTurkAssignmentID(), as.getWorkerID(), feedback);
 				}
 				if (as.getPaymentOutcome().getBonusPaidCents() > 0) {
 					String bonusMessage = ftg.generateBonusMessage(as);
@@ -68,7 +81,46 @@ public class EndExperimentTransaction extends Transaction {
 			}
 		}
 		ex.markAsFinished();/*-?|Anika|Anika|c4|?*/
-
+		Alert.notifyForTermination(ex.getID());
+		//pay pybossa workers over threshold
+		WorkerPaymentChecker checker = new WorkerPaymentChecker();
+		checker.payAllWorkersOverThreshold();
+	}
+	
+	/**
+	 * Stops the experiment from handing out creative tasks. The workers will only rate already given answers.
+	 * If all answers are already sufficiently rated, the experiment will be stopped.
+	 * 
+	 * @throws DatabaseException if the SQL request fails
+ 	 * @throws ConnectionFailedException if theres no connection to the crowdplatform
+	 * @throws IllegalInputException if the hitId was saved in a wrong way or disappeared
+	 * @author Thomas Friedel
+	 */
+	public void stopCreativeTasks(MutableExperiment exp) throws DatabaseException,
+	ConnectionFailedException, IllegalInputException {
+		ConfigModelJson config = new ConfigModelJson(exp.getConfig());
+		Map<String, String> strategy = new HashMap<String, String>();
+		for (String key : config.getStrategy().keySet()) {
+			if (!key.startsWith("tcm_")) {
+				strategy.put(key, config.getStrategy().get(key));
+			}
+		}
+		strategy.put("tcm_class", "edu.kit.ipd.creativecrowd.operations.strategies.OnlyRatingTCM");
+		ConfigModelRepo repo = new PersistentConfigModelRepo();
+		repo.deleteConfigModel(exp.getConfig().getID());
+		config.setStrategy(strategy);
+		exp.setConfig(config);
+		
+		boolean sufficient = true;
+		for (MutableAnswer ans : exp.getCreativeTask().getAnswers()) {
+			if (!ans.isSufficientlyRated()) {
+				sufficient = false;
+			}
+		}
+		if (sufficient) {
+			EndExperimentTransaction end = new EndExperimentTransaction();
+			end.run(exp);
+		}
 	}
 
 }

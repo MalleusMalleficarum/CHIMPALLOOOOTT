@@ -1,5 +1,6 @@
 package edu.kit.ipd.creativecrowd.readablemodel;
 
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableWorker;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 
 // TODO: Auto-generated Javadoc
@@ -48,4 +49,13 @@ public interface Rating {
 	 * @throws DatabaseException
 	 */
 	public float getFinalQualityIndex() throws DatabaseException;
+	
+	/**
+	 * get the workerID from the worker who has written this answer
+	 *
+	 * @return workerID
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public MutableWorker getWorker() throws DatabaseException;
+	
 }

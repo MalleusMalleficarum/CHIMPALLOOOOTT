@@ -57,4 +57,14 @@ public interface Stats {
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
 	public String getTimestampBegin() throws DatabaseException;
+	
+	/**
+	 * Gets how many milliseconds have past since the latest submitted assignment. If no assignments have been submitted yet,
+	 * then the number reflects how many milliseconds have past since the creation of the experiment.
+	 * 
+	 * @return the number of past milliseconds
+	 * @throws DatabaseException  if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 * @author Thomas Friedel
+	 */
+	public long getTimeSinceLastSubmission() throws DatabaseException;
 }

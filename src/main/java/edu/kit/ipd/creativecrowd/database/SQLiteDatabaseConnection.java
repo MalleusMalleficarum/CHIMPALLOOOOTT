@@ -13,8 +13,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-import edu.kit.ipd.creativecrowd.router.Router;
-import edu.kit.ipd.creativecrowd.util.Logger;
+import edu.kit.ipd.chimpalot.util.Logger;
 
 public class SQLiteDatabaseConnection implements DatabaseConnection {
 
@@ -22,7 +21,7 @@ public class SQLiteDatabaseConnection implements DatabaseConnection {
 	private static SQLiteDatabaseConnection instance;
 	
 	private SQLiteDatabaseConnection() {
-		Connection connection = null;
+		connection = null;
 	}
 
 	public static synchronized SQLiteDatabaseConnection getInstance() {
@@ -33,15 +32,17 @@ public class SQLiteDatabaseConnection implements DatabaseConnection {
 	}
 	
 	public void setUpDatabaseConnection(String url) throws SQLException,
-			ClassNotFoundException {
-		Class.forName("org.sqlite.JDBC");
-		// example url "jdbc:sqlite:CreativeCrowd.db"
-		connection = DriverManager.getConnection(url);
-		connection.setAutoCommit(false);
+	ClassNotFoundException {
+		if (connection == null) {
+			Class.forName("org.sqlite.JDBC");
+			// example url "jdbc:sqlite:CreativeCrowd.db"
+			connection = DriverManager.getConnection(url);
+			connection.setAutoCommit(false);
+		}
 	}
 
 	public synchronized Iterable<Iterable<Value>> query(String sql) throws SQLException {/*-?|Simon|simon|c2|?*/
-		Logger.log("DB: "+sql);
+		Logger.debug("DB: "+sql);
 		List<Iterable<Value>> ret = new LinkedList<Iterable<Value>>();
 		// perform sql-query
 		Statement stmt = connection.createStatement();
@@ -116,7 +117,6 @@ public class SQLiteDatabaseConnection implements DatabaseConnection {
 		ret = formatString(ret, arg1);
 		ret = formatString(ret, arg2);
 		return ret;
-
 	}
 
 	@Override

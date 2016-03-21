@@ -1,9 +1,6 @@
 package edu.kit.ipd.creativecrowd.view;
 
-import java.io.File;
-import java.io.IOException;
 
-import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
 

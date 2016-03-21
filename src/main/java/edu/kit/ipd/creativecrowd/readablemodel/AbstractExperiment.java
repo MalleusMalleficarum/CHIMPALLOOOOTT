@@ -2,9 +2,9 @@ package edu.kit.ipd.creativecrowd.readablemodel;
 
 import java.util.Map;
 
+import edu.kit.ipd.creativecrowd.crowdplatform.PlatformIdentity;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 
-// TODO: Auto-generated Javadoc
 /**
  * provides read-only information about the data that is stored from the
  * configuration file.
@@ -42,7 +42,7 @@ public interface AbstractExperiment {
 	 * @return the qualifications
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
-	public Iterable<String> getQualifications() throws DatabaseException;
+	public Iterable<String> getQualifications(PlatformIdentity platform) throws DatabaseException;
 
 	/**
 	 * Gets the strategy params.
@@ -66,7 +66,7 @@ public interface AbstractExperiment {
 	 * @return the basic payment hit cents
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
-	public int getBasicPaymentHITCents() throws DatabaseException;
+	public int getBasicPaymentHITCents(PlatformIdentity platform) throws DatabaseException;
 
 	/**
 	 * Gets the basic payment answer cents.
@@ -74,7 +74,7 @@ public interface AbstractExperiment {
 	 * @return the basic payment answer cents
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
-	public int getBasicPaymentAnswerCents() throws DatabaseException;
+	public int getBasicPaymentAnswerCents(PlatformIdentity platform) throws DatabaseException;
 
 	/**
 	 * Gets the basic payment rating cents.
@@ -82,15 +82,7 @@ public interface AbstractExperiment {
 	 * @return the basic payment rating cents
 	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
 	 */
-	public int getBasicPaymentRatingCents() throws DatabaseException;
-
-	/**
-	 * Gets the bonus payment cents.
-	 *
-	 * @return the bonus payment cents
-	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
-	 */
-	public int getBonusPaymentCents() throws DatabaseException;
+	public int getBasicPaymentRatingCents(PlatformIdentity platform) throws DatabaseException;
 
 	/**
 	 * Gets the HIT title.

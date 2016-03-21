@@ -1,8 +1,8 @@
 package edu.kit.ipd.creativecrowd.view;
 
+import edu.kit.ipd.chimpalot.util.Logger;
 import edu.kit.ipd.creativecrowd.persistentmodel.DatabaseException;
 import edu.kit.ipd.creativecrowd.readablemodel.Experiment;
-import edu.kit.ipd.creativecrowd.util.Logger;
 
 /**
  * View for the status and the statistics of the experiment

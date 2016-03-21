@@ -2,21 +2,31 @@ package edu.kit.ipd.creativecrowd.persistentmodel;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import edu.kit.ipd.creativecrowd.crowdplatform.PlatformIdentity;
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
 import edu.kit.ipd.creativecrowd.database.DatabaseConnection;
 import edu.kit.ipd.creativecrowd.database.Value;
-import edu.kit.ipd.creativecrowd.mturk.AssignmentId;
+import edu.kit.ipd.chimpalot.util.Logger;
+import edu.kit.ipd.creativecrowd.crowdplatform.AssignmentId;
+import edu.kit.ipd.creativecrowd.mutablemodel.ConfigModelRepo;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableCalibrationQuestion;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableControlQuestion;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableCreativeTask;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
-import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingOption;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableRatingTask;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableStats;
+import edu.kit.ipd.creativecrowd.readablemodel.ConfigModel;
+import edu.kit.ipd.creativecrowd.readablemodel.ExperimentType;
+import edu.kit.ipd.creativecrowd.readablemodel.RatingOption;
+import edu.kit.ipd.creativecrowd.readablemodel.TypeOfTask;
+import edu.kit.ipd.creativecrowd.readablemodel.Worker;
 
 /**
  * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment
@@ -33,6 +43,8 @@ class PersistentExperiment implements MutableExperiment {
 
 	/**
 	 * Instantiates a new persistent experiment.
+	 * This does NOT change anything at all in the Database.
+	 * So if you want to put a new shiny experiment in your Database, then this constructor DOES NOT HELP YOU AT ALL.
 	 *
 	 * @param id, a unique id of a persistent experiment
 	 * @param connection, a connection to the database
@@ -128,6 +140,9 @@ class PersistentExperiment implements MutableExperiment {
 
 	@Override
 	public MutableAssignment getAssignmentWithMturkId(AssignmentId mturkassid) throws DatabaseException {
+		if(mturkassid == null) {
+			throw new DatabaseException("Sorry, but an ID should be specified");
+		}
 		MutableAssignment ret = null;
 		try {
 			String sql = connection.formatString("SELECT id FROM assignment WHERE experimentid = {?} AND mturkid = {?}", Value.fromString(name), Value.fromString(mturkassid.getId()));
@@ -188,6 +203,8 @@ class PersistentExperiment implements MutableExperiment {
 	 */
 	@Override
 	public Iterable<? extends MutableRatingTask> getRatingTasks() throws DatabaseException {
+		//TODO only used by WorIntController, not sure if necessary. If not delete. ~Thomas
+		
 		// TODO Vereinheitlichen der return Werte, ob wir extra Parameter haben wollen oder nicht
 		// TODO ExceptionHandling verbessern
 		/*-?|Test Repo-Review|MainUser|c0|?*/
@@ -203,39 +220,7 @@ class PersistentExperiment implements MutableExperiment {
 		return ratingTasks;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#addRatingOption()
-	 */
-	@Override
-	public MutableRatingOption addRatingOption() throws DatabaseException {
-		String ratingoptionid = connection.generateID("ratingoption");
-		try {
-			String sql = connection.formatString("INSERT INTO ratingoption (id,experimentid) VALUES ({?},{?});", Value.fromString(ratingoptionid), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage() + " An error occured creating the RatingOption");
-		}
-		return new PersistentRatingOption(ratingoptionid, this.connection);
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#getRatingOptions()
-	 */
-	@Override
-	public Iterable<MutableRatingOption> getRatingOptions() throws DatabaseException {
-		List<MutableRatingOption> ratingOptions = new ArrayList<MutableRatingOption>();
-		try {
-			String sql = connection.formatString("SELECT id FROM ratingoption WHERE experimentid = {?};", Value.fromString(name));
-			for (Iterable<Value> row : connection.query(sql)) {
-				ratingOptions.add(new PersistentRatingOption(row.iterator().next().asString(), this.connection));
-			}
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return ratingOptions;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -248,91 +233,6 @@ class PersistentExperiment implements MutableExperiment {
 			connection.query(sql);
 		} catch (SQLException e) {
 			// there is no reason to throw an exception
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setDescription(java.lang.String)
-	 */
-	@Override
-	public void setDescription(String description) throws DatabaseException {
-		try {
-			String sql = connection.formatString("UPDATE experiment SET description = {?} WHERE id = {?};", Value.fromString(description), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
-			// there is no reason to throw an exception
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setBudget(int)
-	 */
-	@Override
-	public void setBudget(int cents) throws DatabaseException {
-		try {
-			String sql = connection.formatString("UPDATE experiment SET budget = {?} WHERE id = {?};", Value.fromInt(cents), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setBasicPayment(int)
-	 */
-	@Override
-	public void setBasicPaymentHIT(int cents) throws DatabaseException {
-		try {
-			String sql = connection.formatString("UPDATE experiment SET basic_payment = {?} WHERE id = {?};", Value.fromInt(cents), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setCreativeTaskPayment(int)
-	 */
-	@Override
-	public void setBasicPaymentAnswer(int cents) throws DatabaseException {
-		try {
-			String sql = connection.formatString("UPDATE experiment SET answer_payment = {?} WHERE id = {?};", Value.fromInt(cents), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setRatingTaskPayment(int)
-	 */
-	@Override
-	public void setBasicPaymentRating(int cents) throws DatabaseException {
-		try {
-			String sql = connection.formatString("UPDATE experiment SET rating_payment = {?} WHERE id = {?};", Value.fromInt(cents), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setHitID(java.lang.String)
-	 */
-	@Override
-	public void setHitID(String id) throws DatabaseException {
-		try {
-			String sql = connection.formatString("UPDATE experiment SET hit_mturkid = {?} WHERE id = {?};", Value.fromString(id), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
@@ -359,56 +259,13 @@ class PersistentExperiment implements MutableExperiment {
 	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#markExperimentAsSoftFinished()
 	 */
 	@Override
-	public void markExperimentAsSoftFinished() throws DatabaseException {
+	public void markExperimentAsSoftFinished() throws DatabaseException { //TODO not used. DELETE?
 		try {
 			String sql = connection.formatString("UPDATE experiment SET softfinished = 1 WHERE id = {?};", Value.fromString(name));
 			connection.query(sql);
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setBonusPayment(int)
-	 */
-	@Override
-	public void setBonusPayment(int cents) throws DatabaseException {
-		try {
-			String sql = connection.formatString("UPDATE experiment SET bonus_payment = {?} WHERE id = {?};", Value.fromInt(cents), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setStrategyParams(java.util.Map)
-	 */
-	@Override
-	public void setStrategyParams(Map<String, String> params) throws DatabaseException {
-
-		// for each param
-		for (Map.Entry<String, String> entry : params.entrySet()) {
-
-			// create id and prepare formatString- Iterable
-			String strategyparamid = connection.generateID("strategyparam");
-			List<Value> sqlArgs = new ArrayList<Value>();
-			sqlArgs.add(Value.fromString(strategyparamid));
-			sqlArgs.add(Value.fromString(entry.getKey()));
-			sqlArgs.add(Value.fromString(entry.getValue()));
-			sqlArgs.add(Value.fromString(name));
-
-			// insert into database
-			try {
-				String sql = connection.formatString("INSERT INTO strategyparam (id,key,value,experimentid) VALUES ({?},{?},{?},{?});", sqlArgs);
-				connection.query(sql);
-			} catch (SQLException e) {
-				throw new DatabaseException(e.getMessage());
-			}
-		}
-
 	}
 
 	/*
@@ -435,7 +292,7 @@ class PersistentExperiment implements MutableExperiment {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		return this.name.equals(obj.toString());
+		return this.name.equals(obj.toString()); //WTF?
 
 	}
 
@@ -445,15 +302,7 @@ class PersistentExperiment implements MutableExperiment {
 	 */
 	@Override
 	public String getDescription() throws DatabaseException {
-		String result = null;
-		try {
-			String sql = connection.formatString("SELECT description FROM experiment WHERE id = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> descriptions = connection.query(sql);
-			result = descriptions.iterator().next().iterator().next().asString();
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return result;
+		return this.getConfig().getTaskDescription();
 	}
 
 	/*
@@ -463,13 +312,8 @@ class PersistentExperiment implements MutableExperiment {
 	@Override
 	public Iterable<String> getTags() throws DatabaseException {
 		List<String> ret = new ArrayList<String>();
-		try {
-			String sql = connection.formatString("SELECT text FROM tag WHERE experimentid = {?};", Value.fromString(name));
-			for (Iterable<Value> tag : connection.query(sql)) {
-				ret.add(tag.iterator().next().asString());
-			}
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
+		for (String tag : this.getConfig().getTaskTags()) {
+			ret.add(tag);
 		}
 		return ret;
 	}
@@ -479,17 +323,8 @@ class PersistentExperiment implements MutableExperiment {
 	 * @see edu.kit.ipd.creativecrowd.readablemodel.AbstractExperiment#getQualifications()
 	 */
 	@Override
-	public Iterable<String> getQualifications() throws DatabaseException {
-		List<String> ret = new ArrayList<String>();
-		try {
-			String sql = connection.formatString("SELECT text FROM qualification WHERE experimentid = {?};", Value.fromString(name));
-			for (Iterable<Value> qualitext : connection.query(sql)) {
-				ret.add(qualitext.iterator().next().asString());
-			}
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return ret;
+	public Iterable<String> getQualifications(PlatformIdentity platform) throws DatabaseException {
+		return this.getConfig().getQualifications(platform);
 	}
 
 	/*
@@ -498,19 +333,7 @@ class PersistentExperiment implements MutableExperiment {
 	 */
 	@Override
 	public Map<String, String> getStrategyParams() throws DatabaseException {
-		Map<String, String> ret = new HashMap<String, String>();
-		try {
-			String sql = connection.formatString("SELECT key,value FROM strategyparam WHERE experimentid = {?};", Value.fromString(name));
-			for (Iterable<Value> strategyparam : connection.query(sql)) {
-				Iterator<Value> it = strategyparam.iterator();
-				String key = it.next().asString();
-				String val = it.next().asString();
-				ret.put(key, val);
-			}
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return ret;
+		return this.getConfig().getStrategy();
 	}
 
 	/*
@@ -519,15 +342,7 @@ class PersistentExperiment implements MutableExperiment {
 	 */
 	@Override
 	public int getBudgetCents() throws DatabaseException {
-		int result = 0;
-		try {
-			String sql = connection.formatString("SELECT budget FROM experiment WHERE id = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> budgets = connection.query(sql);
-			result = budgets.iterator().next().iterator().next().asInt();
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return result;
+		return this.getConfig().getBudget();
 	}
 
 	/*
@@ -535,16 +350,8 @@ class PersistentExperiment implements MutableExperiment {
 	 * @see edu.kit.ipd.creativecrowd.readablemodel.AbstractExperiment#getBasicPaymentHITCents()
 	 */
 	@Override
-	public int getBasicPaymentHITCents() throws DatabaseException {
-		int result = 0;
-		try {
-			String sql = connection.formatString("SELECT basic_payment FROM experiment WHERE id = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> basicPayments = connection.query(sql);
-			result = basicPayments.iterator().next().iterator().next().asInt();
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return result;
+	public int getBasicPaymentHITCents(PlatformIdentity platform) throws DatabaseException {
+		return this.getConfig().getBasicPayment(platform);
 	}
 
 	/*
@@ -552,16 +359,8 @@ class PersistentExperiment implements MutableExperiment {
 	 * @see edu.kit.ipd.creativecrowd.readablemodel.AbstractExperiment#getBasicPaymentAnswerCents()
 	 */
 	@Override
-	public int getBasicPaymentAnswerCents() throws DatabaseException {
-		int result = 0;
-		try {
-			String sql = connection.formatString("SELECT answer_payment FROM experiment WHERE id = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> answerPayments = connection.query(sql);
-			result = answerPayments.iterator().next().iterator().next().asInt();
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return result;
+	public int getBasicPaymentAnswerCents(PlatformIdentity platform) throws DatabaseException {
+		return this.getConfig().getPaymentPerTask(platform, TypeOfTask.Creative);
 	}
 
 	/*
@@ -569,33 +368,8 @@ class PersistentExperiment implements MutableExperiment {
 	 * @see edu.kit.ipd.creativecrowd.readablemodel.AbstractExperiment#getBasicPaymentRatingCents()
 	 */
 	@Override
-	public int getBasicPaymentRatingCents() throws DatabaseException {
-		int result = 0;
-		try {
-			String sql = connection.formatString("SELECT rating_payment FROM experiment WHERE id = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> ratingPayments = connection.query(sql);
-			result = ratingPayments.iterator().next().iterator().next().asInt();
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.readablemodel.AbstractExperiment#getBonusPaymentCents()
-	 */
-	@Override
-	public int getBonusPaymentCents() throws DatabaseException {
-		int result = 0;
-		try {
-			String sql = connection.formatString("SELECT bonus_payment FROM experiment WHERE id = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> bonusPayments = connection.query(sql);
-			result = bonusPayments.iterator().next().iterator().next().asInt();
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return result;
+	public int getBasicPaymentRatingCents(PlatformIdentity platform) throws DatabaseException {
+		return this.getConfig().getPaymentPerTask(platform, TypeOfTask.Rating);
 	}
 
 	/*
@@ -604,15 +378,7 @@ class PersistentExperiment implements MutableExperiment {
 	 */
 	@Override
 	public String getHITTitle() throws DatabaseException {
-		String result = null;
-		try {
-			String sql = connection.formatString("SELECT hit_title FROM experiment WHERE id = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> hitTitles = connection.query(sql);
-			result = hitTitles.iterator().next().iterator().next().asString();
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return result;
+		return this.getConfig().getTaskTitle();
 	}
 
 	/*
@@ -621,89 +387,7 @@ class PersistentExperiment implements MutableExperiment {
 	 */
 	@Override
 	public String getHITDescription() throws DatabaseException {
-		String result = null;
-		try {
-			String sql = connection.formatString("SELECT hit_description FROM experiment WHERE id = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> hitDescriptions = connection.query(sql);
-			result = hitDescriptions.iterator().next().iterator().next().asString();
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setHITTitle(java.lang.String)
-	 */
-	@Override
-	public void setHITTitle(String title) throws DatabaseException {
-		try {
-			String sql = connection.formatString("UPDATE experiment SET hit_title = {?} WHERE id = {?};", Value.fromString(title), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setHITDescription(java.lang.String)
-	 */
-	@Override
-	public void setHITDescription(String description) throws DatabaseException {
-		try {
-			String sql = connection.formatString("UPDATE experiment SET hit_description = {?} WHERE id = {?};", Value.fromString(description), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setTags(java.lang.Iterable)
-	 */
-	@Override
-	public void setTags(Iterable<String> tags) throws DatabaseException {
-		try {
-			String sql = null;
-			for (String tag : tags) {
-				String tagId = connection.generateID("tag");
-				List<Value> args = new ArrayList<Value>();
-				args.add(Value.fromString(tagId));
-				args.add(Value.fromString(tag));
-				args.add(Value.fromString(this.name));
-				sql = connection.formatString("INSERT INTO tag (id,text,experimentid) VALUES ({?},{?},{?});", args);
-				connection.query(sql);
-			}
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setQualifications(java.lang.Iterable)
-	 */
-	@Override
-	public void setQualifications(Iterable<String> qualifications) throws DatabaseException {
-		try {
-			String sql = null;
-			for (String qualif : qualifications) {
-				String quid = connection.generateID("qualification");
-				List<Value> args = new ArrayList<Value>();
-				args.add(Value.fromString(quid));
-				args.add(Value.fromString(qualif));
-				args.add(Value.fromString(this.name));
-				sql = connection.formatString("INSERT INTO qualification (id,text,experimentid) VALUES ({?},{?},{?});", args);
-				connection.query(sql);
-			}
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-
+		return this.getConfig().getTaskDescription();
 	}
 
 	/*
@@ -722,51 +406,29 @@ class PersistentExperiment implements MutableExperiment {
 		}
 		return result;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment#setHitID(java.lang.String)
+	 */
+	@Override
+	public void setHitID(String id) throws DatabaseException {
+		try {
+			String sql = connection.formatString("UPDATE experiment SET hit_mturkid = {?} WHERE id = {?};", Value.fromString(id), Value.fromString(name));
+			connection.query(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+	}
+	 
 	@Override
 	public int getMaxNumberOfAnswersPerAssignment() throws DatabaseException {
-		int result = 0;
-		try {
-			String sql = connection.formatString("SELECT max_answers_per_assignment FROM experiment WHERE id = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> maxAnswersPerAssignment = connection.query(sql);
-			result = maxAnswersPerAssignment.iterator().next().iterator().next().asInt();
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return result;
-	}
-
-	@Override
-	public void setMaxNumberOfRatingsPerAssignment(int maxRatings) throws DatabaseException {
-		try {
-			String sql = connection.formatString("UPDATE experiment SET max_ratings_per_assignment = {?} WHERE id = {?};", Value.fromInt(maxRatings), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
-	@Override
-	public void setMaxNumberOfAnswersPerAssignment(int maxAnswers) throws DatabaseException {
-		try {
-			String sql = connection.formatString("UPDATE experiment SET max_answers_per_assignment = {?} WHERE id = {?};", Value.fromInt(maxAnswers), Value.fromString(name));
-			connection.query(sql);
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
+		return this.getConfig().getMaxCreativeTask();
 	}
 
 	@Override
 	public int getMaxNumberOfRatingsPerAssignment() throws DatabaseException {
-		int result = 0;
-		try {
-			String sql = connection.formatString("SELECT max_ratings_per_assignment FROM experiment WHERE id = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> maxRatingsPerAssignment = connection.query(sql);
-			result = maxRatingsPerAssignment.iterator().next().iterator().next().asInt();
-		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-		return result;
+		return this.getConfig().getMaxRatingTask();
 	}
 
 	@Override
@@ -784,25 +446,200 @@ class PersistentExperiment implements MutableExperiment {
 
 	@Override
 	public String getRatingTaskViewClass() throws DatabaseException {
-		String result = null;
+		return this.getConfig().getEvaluationType();
+	}
+	
+	@Override
+	public Iterable<? extends MutableControlQuestion> getControlQuestions() throws DatabaseException {
+		List<MutableControlQuestion> cqs = new ArrayList<MutableControlQuestion>();
 		try {
-			String sql = connection.formatString("SELECT ratingviewclass FROM experiment WHERE id = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> viewclass = connection.query(sql);
-			result = viewclass.iterator().next().iterator().next().asString();
+			String sql = connection.formatString("SELECT  id FROM controlquestion WHERE experimentid = {?};", Value.fromString(name));
+			for (Iterable<Value> rows : connection.query(sql)) {
+				cqs.add( new PersistentControlQuestion( this.connection,rows.iterator().next().asString()));
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		return cqs;
+	}
+	
+	@Override
+	public MutableControlQuestion addControlQuestion() throws DatabaseException {
+		String controlquestionid = connection.generateID("controlquestion");
+		try {
+			String sql = connection.formatString("INSERT INTO controlquestion (id,experimentid) VALUES ({?},{?});", Value.fromString(controlquestionid), Value.fromString(name));
+			connection.query(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage() + " An error occured creating the ControlQuestion");
+		}
+		return new PersistentControlQuestion(this.connection, controlquestionid);
+	}
+
+	@Override
+	public Iterable<? extends MutableCalibrationQuestion> getCalibrationQuestions() throws DatabaseException {
+		List<MutableCalibrationQuestion> cqs = new ArrayList<MutableCalibrationQuestion>();
+		
+		try {
+			String sql = connection.formatString("SELECT id FROM configmodelcalibquestions WHERE configmodelid = {?}", Value.fromString(this.getConfig().getID()));
+			for (Iterable<Value> rows : connection.query(sql)) {
+				cqs.add(new PersistentCalibrationQuestion( rows.iterator().next().asString(),this.connection));
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		return cqs;
+	}
+
+
+
+	@Override
+	public MutableCalibrationQuestion addCalibrationQuestion() throws DatabaseException {
+		String calibquestid  = connection.generateID("calibrationquestion");
+		String containcalibid = connection.generateID("containcalib");
+		try {
+			String sql = "";
+			List<Value> args = new ArrayList<Value>();
+			args.add(Value.fromString(containcalibid));
+			args.add(Value.fromString(name));
+			args.add(Value.fromString(calibquestid));
+			sql = connection.formatString("INSERT INTO containcalib (id,experimentid, calibrationquestionid) VALUES ({?},{?},{?});", args);
+			connection.query(sql);
+			sql = connection.formatString("INSERT INTO containcalib (id,experimentid) VALUES ({?},{?});", Value.fromString(calibquestid), Value.fromString(name));
+			connection.query(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage() + " An error occured creating the CalibrationQuestion");
+		}
+		return new PersistentCalibrationQuestion(calibquestid, this.connection);
+	}
+
+
+	@Override
+	public ConfigModel getConfig() throws DatabaseException {
+		ConfigModel result;
+		try {
+			String sql = connection.formatString("SELECT config FROM experiment WHERE id = {?};", Value.fromString(name));
+			result = new PersistentConfigModel(connection.query(sql).iterator().next().iterator().next().asString(), connection);
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());
 		}
 		return result;
 	}
+	
+	@Override
+	public void setConfig(ConfigModel config) throws DatabaseException {
+		ConfigModelRepo configrepo = new PersistentConfigModelRepo();
+
+		ConfigModel temp = configrepo.createConfigModel(config, PersistentConfigModelRepo.IDPREFIX + name, name);
+
+		PersistentConfigModel perConf = new PersistentConfigModel(temp.getID(), connection);
+		perConf.setExperimentID(name);
+		
+		try {
+			String sql = connection.formatString("UPDATE experiment SET config = {?} WHERE id = {?};",
+					Value.fromString(perConf.getID()), Value.fromString(name));
+			connection.query(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DatabaseException(e.getMessage());
+		}
+	}
 
 	@Override
-	public void setRatingTaskViewClass(String ratingTaskViewClass) throws DatabaseException {
+	public void removeControlQuestion(String quest) throws DatabaseException {
+		String sql = "";
 		try {
-			String sql = connection.formatString("UPDATE experiment SET ratingviewclass = {?} WHERE id = {?};", Value.fromString(ratingTaskViewClass), Value.fromString(name));
+				sql = connection.formatString("DELETE FROM controlanswer WHERE controlquestionid ={?};", Value.fromString(quest));
+				connection.query(sql);
+				sql = connection.formatString("DELETE FROM possiblecontrolanswer WHERE controlquestionid ={?};", Value.fromString(quest));
+				connection.query(sql);
+				 sql = connection.formatString("DELETE FROM controlquestion WHERE id ={?}  AND experimentid ={?};", Value.fromString(quest), Value.fromString(name));
+			connection.query(sql);
+			sql = connection.formatString("DELETE FROM containscontrol WHERE controlquestionid ={?};", Value.fromString(quest));
 			connection.query(sql);
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());
 		}
 	}
 
+	@Override
+	public void removeCalibrationQuestion(String quest) throws DatabaseException { //TODO not used. DELETE?
+		try {
+			String sql = connection.formatString("DELETE FROM containcalib WHERE calibrationquestionid ={?}  AND experimentid ={?};", Value.fromString(quest), Value.fromString(name));
+			connection.query(sql);
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+	}
+
+	@Override
+	public ExperimentType getType() throws DatabaseException {
+		return this.getConfig().getExperimentType();
+	}
+	
+	/**
+	 * Sets the rating options.
+	 * @param ratingOptions list of rating options
+	 * @return {@code true} if successful, {@code false} if input was malformed
+	 * @throws DatabaseException if the SQL request fails (e.g. wrong SQL syntax or the column/table does not exist).
+	 */
+	public boolean setRatingOptions(Map<String, Float> ratingOptions) throws DatabaseException {
+		if (ratingOptions == null) {
+			return false;
+		}
+		try {
+			for (Map.Entry<String, Float> entry : ratingOptions.entrySet()) {
+				
+				String optionId = connection.generateID("ratingoption");
+				List<Value> args = new ArrayList<Value>();
+				args.add(Value.fromString(optionId));
+				args.add(Value.fromString(entry.getKey()));
+				args.add(Value.fromFloat(entry.getValue()));
+				args.add(Value.fromString(this.name));
+				String sql = connection.formatString("INSERT INTO ratingoption (id,text,value,experimentid) VALUES ({?},{?},{?},{?});", args);
+				Logger.debug("SQL: " + sql);
+				connection.query(sql);
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		return true;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see edu.kit.ipd.creativecrowd.readablemodel.ConfigModel#getRatingOptions()
+	 */
+	@Override
+	public Iterable<RatingOption> getRatingOptions() throws DatabaseException {
+		List<RatingOption> result = new LinkedList<RatingOption>();
+		try {
+			String sql = connection.formatString("SELECT id FROM ratingoption WHERE experimentid = {?};",
+					Value.fromString(name)); 
+			Iterable<Iterable<Value>> ratingOptionIds = connection.query(sql);
+			Iterator<Iterable<Value>> ratingOptionIterator = ratingOptionIds.iterator();
+			Logger.debug(ratingOptionIds.toString());
+			Logger.debug(ratingOptionIterator.toString());
+		
+			while (ratingOptionIterator.hasNext()) {
+				String ratingOptionId = ratingOptionIterator.next().iterator().next().asString();
+				Logger.debug("THE REQUEST ID " + ratingOptionId);
+				RatingOption ratingOption = new PersistentRatingOption(ratingOptionId, this.connection);
+				result.add(ratingOption);
+			}
+			
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		return result;
+	}
+
+
+	@Override
+	public Iterable<WorkerId> getBlockedWorkers() throws DatabaseException {
+		ArrayList<WorkerId> result = new ArrayList<WorkerId>();
+		for (Worker wrk : this.getConfig().getBlockedWorkers()) {
+			result.add(new WorkerId(wrk.getID()));
+		}
+		return result;
+	}
 }

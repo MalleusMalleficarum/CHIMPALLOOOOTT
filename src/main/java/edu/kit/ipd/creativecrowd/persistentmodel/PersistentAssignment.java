@@ -6,11 +6,12 @@ import java.util.List;
 
 import edu.kit.ipd.creativecrowd.database.DatabaseConnection;
 import edu.kit.ipd.creativecrowd.database.Value;
-import edu.kit.ipd.creativecrowd.mturk.AssignmentId;
-import edu.kit.ipd.creativecrowd.mturk.WorkerId;
+import edu.kit.ipd.creativecrowd.crowdplatform.AssignmentId;
+import edu.kit.ipd.creativecrowd.crowdplatform.WorkerId;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableAssignment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableTaskConstellation;
+import edu.kit.ipd.creativecrowd.mutablemodel.MutableWorker;
 import edu.kit.ipd.creativecrowd.readablemodel.PaymentOutcome;
 
 /**
@@ -112,6 +113,10 @@ class PersistentAssignment implements MutableAssignment {
 		try {
 			String sql = connection.formatString("UPDATE assignment SET is_submitted = 1 WHERE id = {?};", Value.fromString(this.id));
 			connection.query(sql);
+			//Keep the time
+			sql = connection.formatString("UPDATE assignment SET submissiontime = CURRENT_TIMESTAMP WHERE id = {?};",
+					Value.fromString(this.id));
+			connection.query(sql);
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());
 		}
@@ -207,7 +212,7 @@ class PersistentAssignment implements MutableAssignment {
 	@Override
 	public void setAssignmentID(AssignmentId id) throws DatabaseException {
 		try {
-			String sql = connection.formatString("UPDATE assignment SET MTURKID = {?} WHERE id = {?};", Value.fromString(id.getId()), Value.fromString(this.id));
+			String sql = connection.formatString("UPDATE assignment SET mturkid = {?} WHERE id = {?};", Value.fromString(id.getId()), Value.fromString(this.id));
 			connection.query(sql);
 		} catch (SQLException e) {
 			throw new DatabaseException(e.getMessage());
@@ -224,6 +229,25 @@ class PersistentAssignment implements MutableAssignment {
 			throw new DatabaseException(e.getMessage());
 		}
 		return ret;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see edu.kit.ipd.creativecrowd.readablemodel.Assignment#getTimestampSubmission()
+	 */
+	@Override
+	public String getTimestampSubmission() throws DatabaseException {
+		if (!this.isSubmitted()) {
+			return null;
+		} else {
+			try {
+				String sql = connection.formatString("SELECT submissiontime FROM assignment WHERE id = {?};",
+						Value.fromString(this.id));
+				return connection.query(sql).iterator().next().iterator().next().asString();
+			} catch (SQLException e) {
+				throw new DatabaseException(e.getMessage());
+			}	
+		}
 	}
 
 	/*
@@ -253,4 +277,9 @@ class PersistentAssignment implements MutableAssignment {
 		return this.id.equals(obj.toString());
 
 	}
+	@Override
+	public MutableWorker getWorker() throws DatabaseException {
+		return new PersistentWorker(this.connection, this.getWorkerID().getId());
+	}
+
 }

@@ -2,13 +2,17 @@ package edu.kit.ipd.creativecrowd.persistentmodel;
 
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.List;
+import java.util.LinkedList;
 
+import edu.kit.ipd.chimpalot.util.GlobalApplicationConfig;
+import edu.kit.ipd.chimpalot.util.Logger;
 import edu.kit.ipd.creativecrowd.database.DatabaseConnection;
 import edu.kit.ipd.creativecrowd.database.SQLiteDatabaseConnection;
 import edu.kit.ipd.creativecrowd.database.Value;
 import edu.kit.ipd.creativecrowd.mutablemodel.ExperimentRepo;
 import edu.kit.ipd.creativecrowd.mutablemodel.MutableExperiment;
-import edu.kit.ipd.creativecrowd.util.GlobalApplicationConfig;
+import edu.kit.ipd.creativecrowd.readablemodel.ConfigModel;
 
 /**
  * @see edu.kit.ipd.creativecrowd.mutablemodel.ExperimentRepo
@@ -43,39 +47,16 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 			// Experiment
 			String sql = "CREATE TABLE IF NOT EXISTS experiment"
 					+ "(id TEXT PRIMARY KEY     NOT NULL,"
-					+ " description    TEXT    DEFAULT '', "
-					+ " budget		   INT, "
 					+ " preview_click_count    INT, "
-					+ " hit_mturkid    TEXT, "
-					+ " finished       INT, "
-					+ " softfinished   INT, "
-					+ " answer_payment    INT, "
-					+ " rating_payment    INT , "
-					+ " basic_payment    INT, "
-					+ " statsid        TEXT, "
-					+ " ratingviewclass TEXT, "
-					+ " sqltime		   TIMESTAMP   DEFAULT CURRENT_TIMESTAMP   NOT NULL, "
-					+ " bonus_payment    INT, "
-					+ " tags           INT, "
-					+ " qualifications    INT, "
-					+ " hit_title      INT, "
-					+ " max_answers_per_assignment    INT, "
-					+ " max_ratings_per_assignment    INT, "
-					+ " hit_description    INT);";
-			connection.query(sql);
-
-			// Qualification
-			sql = "CREATE TABLE IF NOT EXISTS  qualification"
-					+ "(id TEXT PRIMARY KEY     NOT NULL,"
-					+ " text	   TEXT  , "
-					+ " experimentid   TEXT     NOT NULL); ";
-			connection.query(sql);
-
-			// Tag
-			sql = "CREATE TABLE IF NOT EXISTS  tag"
-					+ "(id TEXT PRIMARY KEY     NOT NULL,"
-					+ " text	   TEXT   , "
-					+ " experimentid   TEXT     NOT NULL); ";
+					+ " hit_mturkid      TEXT, "
+					+ " finished         INT, "
+					+ " softfinished     INT, "
+					+ " statsid          TEXT, "
+					+ " sqltime		     TIMESTAMP   DEFAULT CURRENT_TIMESTAMP   NOT NULL, "
+					+ " config		     TEXT, "
+					+ " parentexperiment TEXT, "
+					+ " amendment        TEXT, "	
+					+ " bonus_payment    INT);";
 			connection.query(sql);
 
 			// CreativeTask
@@ -88,14 +69,6 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 					+ " experimentid   TEXT     NOT NULL); ";
 			connection.query(sql);
 
-			// StrategyParam
-			sql = "CREATE TABLE IF NOT EXISTS  strategyparam"
-					+ "(id TEXT PRIMARY KEY     NOT NULL,"
-					+ " key	  	 TEXT , "
-					+ " value    TEXT, "
-					+ " experimentid TEXT	   NOT NULL);";
-			connection.query(sql);
-
 			// Assignment
 			sql = "CREATE TABLE IF NOT EXISTS  assignment"
 					+ "(id TEXT PRIMARY KEY     NOT NULL,"
@@ -103,7 +76,8 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 					+ " is_paid	   	   INT  , "
 					+ " mturkid        TEXT, "
 					+ " is_submitted	   INT, "
-					+ " sqltime		   TIMESTAMP   DEFAULT CURRENT_TIMESTAMP   NOT NULL, "
+					+ " sqltime		   TIMESTAMP   DEFAULT CURRENT_TIMESTAMP   NOT NULL, " //This was already there, but I'm not sure if it is actually used or not. Using a new row for submissiontime...
+					+ " submissiontime TIMESTAMP, "
 					+ " experimentid   TEXT     NOT NULL); ";
 			connection.query(sql);
 
@@ -135,14 +109,6 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 					+ " bonus_amount   INT	); ";
 			connection.query(sql);
 
-			// RatingOption
-			sql = "CREATE TABLE IF NOT EXISTS  ratingoption"
-					+ "(id TEXT PRIMARY KEY     NOT NULL,"
-					+ " value	   	   REAL, "
-					+ " text    TEXT , "
-					+ " experimentid   TEXT	   NOT NULL);";
-			connection.query(sql);
-
 			// TaskConstellation
 			sql = "CREATE TABLE IF NOT EXISTS  taskconstellation"
 					+ "(id TEXT PRIMARY KEY     NOT NULL,"
@@ -161,6 +127,7 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 					+ " ratingoptionid TEXT, "
 					+ " final_quality_index    REAL, "
 					+ " containsevaluativeid TEXT, "
+					+ " workerid TEXT, "
 					+ " answerid	   TEXT	  ); ";
 
 			connection.query(sql);
@@ -172,6 +139,8 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 					+ " sqltime		   TIMESTAMP   DEFAULT CURRENT_TIMESTAMP   NOT NULL, "
 					+ " text   					TEXT, "
 					+ " marked_as_rated  			INT, "
+					+ " marked_as_invalid INT, "
+					+ " workerid TEXT, "
 					+ " containscreativeid			TEXT);";
 
 			connection.query(sql);
@@ -195,6 +164,27 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 					+ " task_position  			INT);";
 
 			connection.query(sql);
+			
+			// "ist Ergebnis von" Controlquest-taskconstellation
+						sql = "CREATE TABLE IF NOT EXISTS  containscontrol"
+								+ "(id TEXT PRIMARY 			KEY     NOT NULL,"
+								+ " taskconstellationid		TEXT , "
+								+ " sqltime		   TIMESTAMP   DEFAULT CURRENT_TIMESTAMP   NOT NULL, "
+								+ " controlquestionid			TEXT, "
+								+ " task_position  			INT);";
+
+						connection.query(sql);
+						
+						// "ist Ergebnis von" calibquest-taskconstellation
+						// Overliquid ist jetzt anders ersetzt
+//						sql = "CREATE TABLE IF NOT EXISTS  containscalibtask"
+//								+ "(id TEXT PRIMARY 			KEY     NOT NULL,"
+//								+ " taskconstellationid		TEXT , "
+//								+ " sqltime		   TIMESTAMP   DEFAULT CURRENT_TIMESTAMP   NOT NULL, "
+//								+ " calibrationquestionid			TEXT, "
+//								+ " task_position  			INT);";
+//
+//						connection.query(sql);
 
 			// relation between m RatingTasks and n Answers
 			sql = "CREATE TABLE IF NOT EXISTS  findratingsfor"
@@ -205,10 +195,83 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 					+ " answer_position  			INT);";
 
 			connection.query(sql);
+			//TODO
+			// Controlquestion
+						sql = "CREATE TABLE IF NOT EXISTS  controlquestion"
+								+ "(id TEXT PRIMARY 			KEY     NOT NULL,"
+								+ " question  TEXT, "
+								+ " experimentid			TEXT);";
 
-		} catch (Exception e) {
+						connection.query(sql);
 
+						//Controlanswer
+						sql = "CREATE TABLE IF NOT EXISTS  controlanswer"
+								+ "(id TEXT PRIMARY 			KEY     NOT NULL,"
+								+ "iscorrect TEXT , "
+								+ " sqltime		   TIMESTAMP   DEFAULT CURRENT_TIMESTAMP   NOT NULL, "
+								+ " workerid TEXT, "
+								+ " controlquestionid TEXT);";
+
+						connection.query(sql);
+
+						//PossibleControlanswer
+						sql =  "CREATE TABLE IF NOT EXISTS  possiblecontrolanswer"
+								+ "(id TEXT PRIMARY 			KEY     NOT NULL,"
+								+ "controlquestionid TEXT , "
+								+ "istrue TEXT , "
+								+ "answer TEXT );";
+						
+						connection.query(sql);
+						
+						//Calibrationanswer
+						sql = "CREATE TABLE IF NOT EXISTS  calibrationanswer"
+								+ "(id TEXT PRIMARY 			KEY     NOT NULL,"
+								+ "answer TEXT , "
+								+ " sqltime		   TIMESTAMP   DEFAULT CURRENT_TIMESTAMP   NOT NULL, "
+								+ " workerid TEXT, "
+								+ " calibrationquestionid TEXT);";
+
+						connection.query(sql);
+
+						//PossibleCalibrationanswer
+						sql =  "CREATE TABLE IF NOT EXISTS  possiblecalibrationanswer"
+								+ "(id TEXT PRIMARY 			KEY     NOT NULL,"
+								+ "calibrationquestionid TEXT , "
+								+ "istrue TEXT , "
+								+ "answer TEXT );";
+						
+						connection.query(sql);
+						
+						//containsCalib
+						sql =  "CREATE TABLE IF NOT EXISTS  containcalib"
+								+ "(id TEXT PRIMARY 			KEY     NOT NULL,"
+								+ "calibrationquestionid TEXT , "
+								+ "experimentid TEXT );";
+						
+						connection.query(sql);
+						
+			//Calibrationquestion
+						sql = "CREATE TABLE IF NOT EXISTS  calibrationquestion"
+								+ "(id TEXT PRIMARY 			KEY     NOT NULL,"
+								+ "question TEXT );";
+						
+						connection.query(sql);
+						
+						//RatingOptions
+						sql = "CREATE TABLE IF NOT EXISTS  ratingoption"
+								+ "(id TEXT PRIMARY KEY NOT NULL,"
+								+ " text TEXT, "
+								+ " value REAL, "
+								+ " experimentid TEXT NOT NULL);";
+						connection.query(sql);
+						
+						
+
+		} catch (SQLException e) {
+			throw new DatabaseException(e.getMessage());
 		}
+		
+		new PersistentCalibrationQuestionRepo(); //TODO Dirty fix. We should centralise repo building at some point
 	}
 
 	/*
@@ -216,11 +279,14 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 	 * @see edu.kit.ipd.creativecrowd.mutablemodel.ExperimentRepo#createExperiment(java.lang.String)
 	 */
 	@Override
-	public MutableExperiment createExperiment(String name) throws DatabaseException {
+	public MutableExperiment createExperiment(String name, ConfigModel model) throws DatabaseException, IDAlreadyUsedException {
+		if(model == null || name == null) {
+			throw new DatabaseException("Tried to create an experiment without configmodel");
+		}
 		try {
 			String sql = connection.formatString("SELECT * FROM experiment WHERE id = {?};", Value.fromString(name));
 			if (connection.query(sql).iterator().hasNext()) {
-				throw new DatabaseException("experimentid already taken");
+				throw new IDAlreadyUsedException("experimentid already taken");
 			}
 
 			sql = connection.formatString("INSERT INTO experiment (id) VALUES ({?});", Value.fromString(name));
@@ -239,6 +305,9 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 			throw new DatabaseException(e.getMessage());
 		}
 		PersistentExperiment ex = new PersistentExperiment(name, this.connection);
+		ex.setConfig(model);
+		ex.setRatingOptions(model.getRatingOptions());
+		System.out.println(name + " created!");
 		return ex;
 	}
 
@@ -247,20 +316,21 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 	 * @see edu.kit.ipd.creativecrowd.mutablemodel.ExperimentRepo#loadExperiment(java.lang.String)
 	 */
 	@Override
-	public MutableExperiment loadExperiment(String name) throws DatabaseException {
+	public MutableExperiment loadExperiment(String name) throws DatabaseException, IDNotFoundException {
 
 		MutableExperiment ret = null;
 		try {
+			Logger.debug("************" +name);
 			String sql = connection.formatString("SELECT * FROM experiment WHERE id = {?};", Value.fromString(name));
 			Iterable<Iterable<Value>> persistentExperiments = connection.query(sql);
 			if (persistentExperiments.iterator().hasNext()) {
 				ret = new PersistentExperiment(name, this.connection);
 			} else {
-				throw new DatabaseException("requested Experiment does not exist");
+				throw new IDNotFoundException("requested Experiment does not exist");
 			}
 
 		} catch (SQLException e) {
-			throw new DatabaseException(e.getMessage());
+			throw new DatabaseException(e.getMessage() + "WELT");
 		}
 		return ret;
 	}
@@ -268,23 +338,22 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 	@Override
 	public void deleteExperiment(String name) throws DatabaseException {
 		try {
+			//Delete the associated ConfigModel
+			PersistentExperiment exp = new PersistentExperiment(name, this.connection);
+			PersistentConfigModelRepo configRepo = new PersistentConfigModelRepo();
+			Logger.debug("*************** " +exp.getConfig().getID());
+			configRepo.deleteConfigModel(exp.getConfig().getID());
+
 			// delete Stats
 			String sql = connection.formatString("SELECT statsid FROM experiment WHERE id = {?};", Value.fromString(name));
 			String tmpId = connection.query(sql).iterator().next().iterator().next().asString();
 			sql = connection.formatString("DELETE FROM stats WHERE id = {?};", Value.fromString(tmpId));
 			connection.query(sql);
-			// delete RatingOptions
-			sql = connection.formatString("DELETE FROM ratingoption WHERE experimentid = {?};", Value.fromString(name));
-			connection.query(sql);
-			// delete Tags
-			sql = connection.formatString("DELETE FROM tag WHERE experimentid = {?};", Value.fromString(name));
-			connection.query(sql);
-			// delete Qualifications
-			sql = connection.formatString("DELETE FROM qualification WHERE experimentid = {?};", Value.fromString(name));
-			connection.query(sql);
-			// delete Strategy
-			sql = connection.formatString("DELETE FROM strategyparam WHERE experimentid = {?};", Value.fromString(name));
-			connection.query(sql);
+			
+			
+			// delete RatingOptions done in config.delete
+//			sql = connection.formatString("DELETE FROM ratingoption WHERE experimentid = {?};", Value.fromString(name));
+//			connection.query(sql);
 
 			/*-{?}|Anika|Philipp|c2|{?}*/
 			// delete the creative tasks
@@ -294,9 +363,28 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 			sql = connection.formatString("DELETE FROM ratingtask WHERE experimentid = {?};", Value.fromString(name));
 			connection.query(sql);
 
+			//delete from controlquests
+			sql = connection.formatString("SELECT  id FROM controlquestion WHERE experimentid = {?};", Value.fromString(name));
+			Iterable<Iterable<Value>> itrbl = connection.query(sql);
+			for (Iterable<Value> ass : itrbl) {
+				String assId = ass.iterator().next().asString();
+				exp.removeControlQuestion(assId);
+			}
+			sql =  connection.formatString("DELETE FROM controlquestion WHERE experimentid = {?};", Value.fromString(name));
+			connection.query(sql);
+
+			//delete from containcalib
+			sql =  connection.formatString("DELETE FROM containcalib WHERE experimentid = {?};", Value.fromString(name));
+			connection.query(sql);
+			
+			//delete from containcalibtask
+			//overliquid sollte im configmodel gelöscht werden
+//			sql =  connection.formatString("DELETE FROM containscalibtask WHERE experimentid = {?};", Value.fromString(name));
+//			connection.query(sql);
+
 			// for each Assignment and its TC
 			sql = connection.formatString("SELECT id FROM assignment WHERE experimentid = {?};", Value.fromString(name));
-			Iterable<Iterable<Value>> itrbl = connection.query(sql);
+			itrbl = connection.query(sql);
 			for (Iterable<Value> ass : itrbl) {
 				String assId = ass.iterator().next().asString();
 				// get the TC to get the Creative+RatingTasks
@@ -349,6 +437,9 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 				// now delete the assignment
 				sql2 = connection.formatString("DELETE FROM assignment WHERE id = {?};", Value.fromString(assId));
 				connection.query(sql2);
+				// now delete the ratingoption
+				sql = connection.formatString("DELETE FROM ratingoption WHERE experimentid = {?}", Value.fromString(name));
+				connection.query(sql);
 
 			}
 
@@ -358,6 +449,30 @@ public class PersistentExperimentRepo implements ExperimentRepo {
 		} catch (SQLException ex) {
 			throw new DatabaseException(ex.getMessage());
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see edu.kit.ipd.creativecrowd.mutablemodel.ExperimentRepo#loadAllExperiments()
+	 */
+	@Override
+	public List<MutableExperiment> loadAllExperiments() throws DatabaseException {
+		List<MutableExperiment> ret = new LinkedList<MutableExperiment>();
+		try {
+			String sql = "SELECT id FROM experiment";
+			Iterable<Iterable<Value>> experimentNames = connection.query(sql);
+			Iterator<Iterable<Value>> namesIterator = experimentNames.iterator();
+
+			while (namesIterator.hasNext()) {
+				String expName = namesIterator.next().iterator().next().asString();
+				MutableExperiment exp = loadExperiment(expName);
+				ret.add(exp);
+			}
+		} catch (SQLException | IDNotFoundException e) {
+			throw new DatabaseException(e.getMessage());
+		}
+		//System.out.println(ret);
+		return ret;
 	}
 
 }

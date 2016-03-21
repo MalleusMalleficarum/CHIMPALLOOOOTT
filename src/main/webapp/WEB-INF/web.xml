@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+
+    <display-name>CreativeCrowd</display-name>
+    <description>
+        CreativeCrowd description goes here
+    </description>
+
+    <!-- exemplary config (see GlobalApplicationConfig) -->
+    <!-- <context-param>
+        <param-name>CreativeCrowd_AWSAccessKeyId</param-name>
+        <param-value>trolool</param-value>
+    </context-param> -->
+
+  <context-param>
+        <param-name>CreativeCrowd_AWSAccessKeyId</param-name>
+        <param-value>AKIAITJZI67YTQNCJ5PA</param-value>
+    </context-param>
+
+  <context-param>
+        <param-name>CreativeCrowd_AWSSecretKey</param-name>
+        <param-value>pPe/kqQ8NdSu7aqwWLHsOPdqEk8PtQEQj0G/jhPC</param-value>
+    </context-param>
+
+  <context-param>
+        <param-name>CreativeCrowd_DBPath</param-name>
+        <param-value>jdbc:sqlite:CreativeCrowd.db</param-value>
+    </context-param>
+
+  <context-param>
+        <param-name>CreativeCrowd_PublicBaseURL</param-name>
+        <param-value>https://localhost:4567</param-value>
+    </context-param>
+
+  <context-param>
+        <param-name>CreativeCrowd_IsSandbox</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+  <context-param>
+        <param-name>CreativeCrowd_RequesterCredentials</param-name>
+        <param-value></param-value>
+    </context-param>
+    <filter>
+        <filter-name>SparkFilter</filter-name>
+        <filter-class>spark.servlet.SparkFilter</filter-class>
+        <init-param>
+            <param-name>applicationClass</param-name>
+            <param-value>edu.kit.ipd.creativecrowd.router.Router</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>SparkFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>ProxyServlet</servlet-name>
+        <servlet-class>edu.kit.ipd.creativecrowd.util.DummyServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ProxyServlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>
